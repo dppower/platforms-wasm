@@ -1,0 +1,10 @@
+bin/
+obj/
+build-aot/
+build/
+node_modules/
+.vs/
+Debug/
+*.db
+*.opendb
+*.user
