@@ -47,6 +47,9 @@
     <TypeScriptCompile Include="maths\rot2.ts" />
     <TypeScriptCompile Include="maths\transform.ts" />
     <TypeScriptCompile Include="maths\vec2.ts" />
+    <TypeScriptCompile Include="typings.d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="tsconfig.json" />

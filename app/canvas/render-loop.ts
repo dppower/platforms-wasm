@@ -1,5 +1,8 @@
 ﻿import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+
 import { Subject } from "rxjs/Subject";
+import { concatMap, map } from "rxjs/operators";
 
 import { InputManager } from "./input-manager";
 
@@ -29,7 +32,7 @@ export class RenderLoop {
 
     private pause_updates_ = false;
 
-    constructor(private input_manager: InputManager) { };
+    constructor(private http_client_: HttpClient, private input_manager: InputManager) { };
 
     begin() {
         this.previous_time = performance.now();
@@ -39,6 +42,31 @@ export class RenderLoop {
             this.last_fps_update = performance.now();
             this.update(time);
         });
+    };
+
+    loadPhysicsModule() {
+        this.http_client_.get(
+            "wasm/hello_world.wasm", { responseType: "arraybuffer" }
+        )
+        .pipe(
+            concatMap(bytes => {
+                const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
+                const env = {
+                    abort: () => { throw new Error("overflow"); },
+                    memory,
+                    memoryBase: 1024,
+                    table: new WebAssembly.Table({ initial: 6, maximum: 6, element: 'anyfunc' }),
+                    tableBase: 0,
+                    STACKTOP: 0,
+                    STACK_MAX: memory.buffer.byteLength
+                };
+                return WebAssembly.instantiate(bytes, { env });
+            })
+        )
+        .subscribe(result => {
+            result.instance.exports._main();
+            console.log("instance loaded");
+        })
     };
 
     update(time_now: number) {

@@ -1,5 +1,5 @@
-#include "embind/bind.h"
 #include "world.h"
+#include <emscripten/bind.h>
 
 const float time_step = 0.02;
 const int32 velocity_iterations = 6;
@@ -33,6 +33,6 @@ void World::init(float player_x, float player_y)
 	player_.init(world_, player_x, player_y);
 }
 
-EMSCRIPTEN_BINDINGS(test) {
+EMSCRIPTEN_BINDINGS(world) {
 
 }
