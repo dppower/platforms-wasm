@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from "@angular/core";
+import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
 
 import { RenderLoop } from "./render-loop";
 
@@ -17,29 +17,27 @@ import { RenderLoop } from "./render-loop";
     }
     `]
 })
-export class MainCanvas implements OnInit, AfterViewInit {
-
-    //load_module = false;
-
+export class MainCanvas implements OnInit, AfterViewInit, OnDestroy {
+    
     constructor(private render_loop_: RenderLoop) { };
 
-    ngOnInit() {
-        //this.render_loop_.loadPhysicsModule();
-    };
+    ngOnInit() {};
 
     ngAfterViewInit() {
-        //Module = {
-        //    print: function (text: string) { alert("stdout: " + text); },
-        //    onRuntimeInitialized: () => {
-        //        console.log("loaded module.");
-        //        //window.Module.main();
-        //    }
-        //};
-        console.log(window.Module);
-        //Module._main();
-        //let script = document.createElement("script");
-        //script.src = "wasm/hello_world.js";
-        //script.type = "application/wasm";
-        //document.body.appendChild(script);
+        window.Module = {
+            print: function (text: string) { alert("stdout: " + text); },
+            onRuntimeInitialized: () => {
+                console.log("loaded module.");
+                this.render_loop_.begin();
+            }
+        };
+
+        let script = document.createElement("script");
+        script.src = "wasm/physics.js";
+        document.body.appendChild(script);
+    };
+
+    ngOnDestroy() {
+        this.render_loop_.stop();
     };
 }

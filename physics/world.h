@@ -1,6 +1,6 @@
 #pragma once
-#include <Box2d/Dynamics/b2World.h>
-#include <Box2d/Common/b2Math.h>
+#include <Box2D/Dynamics/b2World.h>
+#include <Box2D/Common/b2Math.h>
 #include "player.h"
 #include "world_bounds.h"
 

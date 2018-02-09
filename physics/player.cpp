@@ -2,7 +2,7 @@
 #include <Box2D/Dynamics/b2Fixture.h>
 #include <Box2D/Collision/Shapes/b2CircleShape.h>
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
-#include <Box2d/Dynamics/b2Body.h>
+#include <Box2D/Dynamics/b2Body.h>
 
 Player::Player()
 {
@@ -29,7 +29,10 @@ void Player::init(b2World & world, float32 x, float32 y)
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(x, y);
 	bodyDef.fixedRotation = true;
-	body = std::unique_ptr<b2Body>(world.CreateBody(&bodyDef));
+	body = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
+		world.CreateBody(&bodyDef), 
+		[&world](b2Body*  body) { world.DestroyBody(body); }
+	);
 
 	// Three fixtures, two circles and rectangle to form capsule
 	b2FixtureDef fixtureDef;

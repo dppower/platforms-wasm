@@ -33,6 +33,9 @@ void World::init(float player_x, float player_y)
 	player_.init(world_, player_x, player_y);
 }
 
-EMSCRIPTEN_BINDINGS(world) {
-
+EMSCRIPTEN_BINDINGS(physics) {
+	emscripten::class_<World>("World")
+		.constructor()
+		.function("init", &World::init)
+		.function("tick", &World::tick);
 }

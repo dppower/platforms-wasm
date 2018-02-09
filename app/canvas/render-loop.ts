@@ -32,9 +32,14 @@ export class RenderLoop {
 
     private pause_updates_ = false;
 
+    private physics_module_: any;
+
     constructor(private http_client_: HttpClient, private input_manager: InputManager) { };
 
     begin() {
+        this.physics_module_ = new window.Module.World();
+        this.physics_module_.init(0.2, 0.2);
+
         this.previous_time = performance.now();
         this.accumulated_time = 0;
         this.total_time = 0;
@@ -43,32 +48,7 @@ export class RenderLoop {
             this.update(time);
         });
     };
-
-    loadPhysicsModule() {
-        this.http_client_.get(
-            "wasm/hello_world.wasm", { responseType: "arraybuffer" }
-        )
-        .pipe(
-            concatMap(bytes => {
-                const memory = new WebAssembly.Memory({ initial: 256, maximum: 256 });
-                const env = {
-                    abort: () => { throw new Error("overflow"); },
-                    memory,
-                    memoryBase: 1024,
-                    table: new WebAssembly.Table({ initial: 6, maximum: 6, element: 'anyfunc' }),
-                    tableBase: 0,
-                    STACKTOP: 0,
-                    STACK_MAX: memory.buffer.byteLength
-                };
-                return WebAssembly.instantiate(bytes, { env });
-            })
-        )
-        .subscribe(result => {
-            result.instance.exports._main();
-            console.log("instance loaded");
-        })
-    };
-
+    
     update(time_now: number) {
         this.cancel_token = requestAnimationFrame((time: number) => {
             this.update(time);
@@ -85,14 +65,16 @@ export class RenderLoop {
         this.frames_this_second++;
 
         if (!this.pause_updates_) {
-            let delta_time = time_now - this.previous_time;
-            this.accumulated_time += delta_time;
-            while (this.accumulated_time > this.time_step) {
-                // Update
-                this.update_events.next(this.dt);
-                this.accumulated_time -= this.time_step;
-            }
+            let delta_time = (time_now - this.previous_time) / 1000;
+            //this.accumulated_time += delta_time;
+            //while (this.accumulated_time > this.time_step) {
+            //    // Update
+            //    this.update_events.next(this.dt);
+            //    this.accumulated_time -= this.time_step;
+            //}
+            this.accumulated_time = this.physics_module_.tick(delta_time);
 
+            console.log(`delta: ${delta_time}, remainder: ${this.accumulated_time}.`);
             this.previous_time = time_now;
 
             this.input_manager.update();

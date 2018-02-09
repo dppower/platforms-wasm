@@ -1,5 +1,5 @@
 #include "world_bounds.h"
-#include <Box2d/Collision/Shapes/b2PolygonShape.h>
+#include <Box2D/Collision/Shapes/b2PolygonShape.h>
 
 WorldBounds::WorldBounds()
 {
@@ -15,7 +15,10 @@ void WorldBounds::init(b2World & world) {
 	b2BodyDef originDef;
 	originDef.type = b2_staticBody;
 	originDef.position.Set(0.0f, 0.0f);
-	origin = std::unique_ptr<b2Body>(world.CreateBody(&originDef));
+	origin = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
+		world.CreateBody(&originDef),
+		[&world](b2Body*  body) { world.DestroyBody(body); }
+	);
 
 	// Ground Box
 	b2PolygonShape boundingBox;
