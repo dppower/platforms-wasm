@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>F:\dev\emsdk\include;F:\dev\box2d\Box2D;$(IncludePath)</IncludePath>
+    <IncludePath>F:\dev\emsdk\vs-includes;F:\dev\box2d\Box2D;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>F:\dev\box2d\Box2D;$(IncludePath)</IncludePath>
