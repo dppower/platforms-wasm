@@ -56,7 +56,14 @@
     <TypeScriptCompile Include="maths\rot2.ts" />
     <TypeScriptCompile Include="maths\transform.ts" />
     <TypeScriptCompile Include="maths\vec2.ts" />
-    <TypeScriptCompile Include="physics\constants.ts">
+    <TypeScriptCompile Include="physics\box-dimensions.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="physics\constant-tokens.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="physics\physics-providers.ts" />
+    <TypeScriptCompile Include="physics\world-state.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="renderers\scene-renderer.ts" />

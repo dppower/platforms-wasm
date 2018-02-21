@@ -2,7 +2,7 @@ import { Injectable, Inject } from "@angular/core";
 
 import { Subject } from "rxjs/Subject";
 import { TouchEventTypes, MultiTouch } from "./touch-utility";
-import { WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constants";
+import { WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constant-tokens";
 import { Vec2, Vec2_T } from "../maths/vec2";
 
 export interface InputState {

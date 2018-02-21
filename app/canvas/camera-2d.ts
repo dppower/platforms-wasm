@@ -1,7 +1,7 @@
 ﻿import { Injectable, Inject } from "@angular/core";
 import { Vec2, Vec2_T } from "../maths/vec2";
 import { InputManager } from "./input-manager";
-import { WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constants";
+import { WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constant-tokens";
 
 @Injectable()
 export class Camera2d {

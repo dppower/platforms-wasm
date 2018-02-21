@@ -1,9 +1,9 @@
 import { Injectable, Inject } from "@angular/core";
 
-import { Vec2_T } from "../maths/vec2";
 import { Mesh } from "../geometry/mesh";
 import { PLAYER, PLATFORMS, SKY, RGB_COLORS } from "../geometry/mesh-providers";
-import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_START, PlatformDimensions } from "../physics/constants";
+import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "../physics/constant-tokens";
+import { BoxDimensions } from "../physics/box-dimensions";
 import { ShaderProgram } from "../shaders/shader-program";
 import { BASIC_SHADER } from "../shaders/shader-providers";
 import { WEBGL } from "../webgl/webgl-tokens";
@@ -20,8 +20,8 @@ export class SceneRenderer {
         @Inject(PLATFORMS) private platforms_: Mesh[],
         @Inject(PLAYER) private player_: Mesh,
         @Inject(RGB_COLORS) private rgb_colors: number[][],
-        @Inject(PLAYER_START) private player_start_: Vec2_T,
-        @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: PlatformDimensions[],
+        @Inject(PLAYER_DIMENSIONS) private player_dimensions_: BoxDimensions,
+        @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: BoxDimensions[],
         @Inject(WORLD_WIDTH) private world_width_: number,
         @Inject(WORLD_HEIGHT) private world_height_: number,
         private main_camera_: Camera2d,
@@ -37,7 +37,7 @@ export class SceneRenderer {
         let hh = this.world_height_ / 2;
         this.sky_.initTransform(hw, hh, 10, hw, hh, 0);
         
-        this.player_.initTransform(this.player_start_.x, this.player_start_.y, 1, 0.5, 1, 0);
+        this.player_.initTransform(this.player_dimensions_.x, this.player_dimensions_.y, 1, 0.5, 1, 0);
 
         this.platforms_.forEach((platform, index) => {
             platform.setUniformColor(this.rgb_colors[index], index);

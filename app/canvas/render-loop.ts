@@ -31,14 +31,9 @@ export class RenderLoop {
 
     private pause_updates_ = false;
 
-    //private physics_module_: any;
-
     constructor(private http_client_: HttpClient, private input_manager: InputManager) { };
 
     begin() {
-        //this.physics_module_ = new window.Module.World();
-        //this.physics_module_.init(0.2, 0.2);
-
         this.previous_time = performance.now();
         this.accumulated_time = 0;
         this.total_time = 0;
@@ -70,7 +65,6 @@ export class RenderLoop {
                 this.update_events.next(this.dt);
                 this.accumulated_time -= this.time_step;
             }
-            //this.accumulated_time = this.physics_module_.tick(delta_time);
             
             this.previous_time = time_now;
 
@@ -80,7 +74,7 @@ export class RenderLoop {
             this.total_time_updates.next(this.total_time);
         }
 
-        let alpha = this.pause_updates_ ? 1 : this.accumulated_time;
+        let alpha = this.pause_updates_ ? 1 : this.accumulated_time / this.time_step;
         this.render_events.next(alpha);
     };
 

@@ -11,7 +11,8 @@ import { CanvasController } from "./canvas-controller.directive";
 import { InputManager } from "./input-manager";
 import { RenderLoop } from "./render-loop";
 import { Camera2d } from "./camera-2d";
-import { WORLD_CONSTANTS, WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constants";
+import { WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constant-tokens";
+import { PHYSICS_PROVIDERS } from "../physics/physics-providers";
 
 const Camera: StaticProvider = {
     provide: Camera2d,
@@ -28,7 +29,7 @@ const Camera: StaticProvider = {
 @NgModule({
     imports: [ CommonModule, WebglModule ],
     declarations: [ MainCanvas, CanvasController ],
-    providers: [ InputManager, RenderLoop, WORLD_CONSTANTS, Camera ],
+    providers: [ InputManager, RenderLoop, PHYSICS_PROVIDERS, Camera ],
     exports: [ MainCanvas ]
 })
 export class CanvasModule { };
