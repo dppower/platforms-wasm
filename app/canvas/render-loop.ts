@@ -27,24 +27,23 @@ export class RenderLoop {
     readonly render_events = new Subject<number>();
     readonly update_events = new Subject<number>();
 
-    readonly total_time_updates = new Subject<number>();   
-    readonly rAF_begin = new Subject<number>();
+    readonly total_time_updates = new Subject<number>();
 
     private pause_updates_ = false;
 
-    private physics_module_: any;
+    //private physics_module_: any;
 
     constructor(private http_client_: HttpClient, private input_manager: InputManager) { };
 
     begin() {
-        this.physics_module_ = new window.Module.World();
-        this.physics_module_.init(0.2, 0.2);
+        //this.physics_module_ = new window.Module.World();
+        //this.physics_module_.init(0.2, 0.2);
 
         this.previous_time = performance.now();
         this.accumulated_time = 0;
         this.total_time = 0;
         this.cancel_token = requestAnimationFrame((time: number) => {
-            this.last_fps_update = performance.now();
+            this.last_fps_update = time;
             this.update(time);
         });
     };
@@ -53,9 +52,7 @@ export class RenderLoop {
         this.cancel_token = requestAnimationFrame((time: number) => {
             this.update(time);
         });
-
-        this.rAF_begin.next(time_now);
-
+        
         if (time_now > this.last_fps_update + 1000) { // update every second
             this.frames_per_second = 0.25 * this.frames_this_second + 0.75 * this.frames_per_second;
             // Reset
@@ -65,16 +62,16 @@ export class RenderLoop {
         this.frames_this_second++;
 
         if (!this.pause_updates_) {
-            let delta_time = (time_now - this.previous_time) / 1000;
-            //this.accumulated_time += delta_time;
-            //while (this.accumulated_time > this.time_step) {
-            //    // Update
-            //    this.update_events.next(this.dt);
-            //    this.accumulated_time -= this.time_step;
-            //}
-            this.accumulated_time = this.physics_module_.tick(delta_time);
-
-            console.log(`delta: ${delta_time}, remainder: ${this.accumulated_time}.`);
+            //let delta_time = (time_now - this.previous_time) / 1000;
+            let delta_time = time_now - this.previous_time;
+            this.accumulated_time += delta_time;
+            while (this.accumulated_time > this.time_step) {
+                // Update
+                this.update_events.next(this.dt);
+                this.accumulated_time -= this.time_step;
+            }
+            //this.accumulated_time = this.physics_module_.tick(delta_time);
+            
             this.previous_time = time_now;
 
             this.input_manager.update();
@@ -83,7 +80,7 @@ export class RenderLoop {
             this.total_time_updates.next(this.total_time);
         }
 
-        let alpha = this.pause_updates_ ? 1 : this.accumulated_time / this.time_step;
+        let alpha = this.pause_updates_ ? 1 : this.accumulated_time;
         this.render_events.next(alpha);
     };
 

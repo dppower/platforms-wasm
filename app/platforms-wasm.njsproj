@@ -37,19 +37,39 @@
   <ItemGroup>
     <TypeScriptCompile Include="app.component.ts" />
     <TypeScriptCompile Include="app.module.ts" />
+    <TypeScriptCompile Include="canvas\camera-2d.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="canvas\canvas-controller.directive.ts" />
     <TypeScriptCompile Include="canvas\canvas.module.ts" />
     <TypeScriptCompile Include="canvas\input-manager.ts" />
     <TypeScriptCompile Include="canvas\main-canvas.component.ts" />
     <TypeScriptCompile Include="canvas\render-loop.ts" />
+    <TypeScriptCompile Include="canvas\touch-utility.ts" />
+    <TypeScriptCompile Include="geometry\circle-mesh.ts" />
+    <TypeScriptCompile Include="geometry\mesh-providers.ts" />
+    <TypeScriptCompile Include="geometry\mesh-data.ts" />
+    <TypeScriptCompile Include="geometry\primitive.ts" />
+    <TypeScriptCompile Include="geometry\mesh.ts" />
+    <TypeScriptCompile Include="geometry\square-mesh.ts" />
     <TypeScriptCompile Include="main.ts" />
-    <TypeScriptCompile Include="maths\mat2.ts" />
     <TypeScriptCompile Include="maths\rot2.ts" />
     <TypeScriptCompile Include="maths\transform.ts" />
     <TypeScriptCompile Include="maths\vec2.ts" />
+    <TypeScriptCompile Include="physics\constants.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="renderers\scene-renderer.ts" />
+    <TypeScriptCompile Include="shaders\active-program-attributes.ts" />
+    <TypeScriptCompile Include="shaders\shader-program.ts" />
+    <TypeScriptCompile Include="shaders\shader-providers.ts" />
+    <TypeScriptCompile Include="shaders\shader.ts" />
     <TypeScriptCompile Include="typings.d.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="webgl\webgl-tokens.ts" />
+    <TypeScriptCompile Include="webgl\webgl.directive.ts" />
+    <TypeScriptCompile Include="webgl\webgl.module.ts" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="tsconfig.json" />
@@ -57,6 +77,11 @@
   <ItemGroup>
     <Folder Include="canvas\" />
     <Folder Include="maths\" />
+    <Folder Include="geometry\" />
+    <Folder Include="physics\" />
+    <Folder Include="renderers\" />
+    <Folder Include="shaders\" />
+    <Folder Include="webgl\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />

@@ -1,35 +1,22 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
 
+import { Subject } from "rxjs/Subject";
+import { TouchEventTypes, MultiTouch } from "./touch-utility";
+import { WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constants";
 import { Vec2, Vec2_T } from "../maths/vec2";
 
 export interface InputState {
-    forward: boolean,
-    back: boolean,
     left: boolean,
     right: boolean,
-    jump: boolean,
-    action_1: boolean,
-    action_2: boolean,
-    action_3: boolean,
-    action_4: boolean,
-    action_5: boolean,
-    display_menu: boolean
+    jump: boolean
 }
 
 export type InputTypes = keyof InputState;
 
 const InitialInputState: InputState = {
-    forward: false,
-    back: false,
     left: false,
     right: false,
-    jump: false,
-    action_1: false,
-    action_2: false,
-    action_3: false,
-    action_4: false,
-    action_5: false,
-    display_menu: false
+    jump: false
 };
 
 export interface PointerState {
@@ -51,12 +38,16 @@ const InitialPointerState: PointerState = {
 @Injectable()
 export class InputManager {
 
-    get aspect() {
-        return this.current_aspect_ratio_ || 1.5;
+    get canvas_aspect() {
+        return this.canvas_aspect_;
     };
 
-    set aspect(value: number) {
-        this.current_aspect_ratio_ = value;
+    get world_aspect() {
+        return this.world_aspect_;
+    };
+
+    set canvas_aspect(value: number) {
+        this.canvas_aspect_ = value;
     };
 
     get delta() {
@@ -71,6 +62,8 @@ export class InputManager {
         return this.current_pointer_state_.wheel;
     };
 
+    readonly touch_events = new Subject<MultiTouch>();
+
     private previous_key_state_: InputState;
     private current_key_state_: InputState;
 
@@ -79,29 +72,43 @@ export class InputManager {
 
     private current_key_bindings_ = new Map<string, InputTypes>();
 
-    private current_aspect_ratio_: number;
+    private canvas_aspect_: number = 1.5;
+    private world_aspect_: number;
 
-    constructor() {
+    constructor(
+        @Inject(WORLD_WIDTH) private world_width_: number,
+        @Inject(WORLD_HEIGHT) private world_height_: number
+    ) {
+        this.world_aspect_ = this.world_width_ / this.world_height_;
         // Initialise state
         this.previous_key_state_ = Object.assign({}, InitialInputState);
         this.current_key_state_ = Object.assign({}, InitialInputState);
         this.previous_pointer_state_ = Object.assign({}, InitialPointerState);
         this.current_pointer_state_ = Object.assign({}, InitialPointerState);
         // set default key code bindings
-        this.current_key_bindings_.set("KeyW", "forward");
-        this.current_key_bindings_.set("KeyS", "back");
         this.current_key_bindings_.set("KeyA", "left");
         this.current_key_bindings_.set("KeyD", "right");
         this.current_key_bindings_.set("Space", "jump");
-        this.current_key_bindings_.set("Digit1", "action_1");
-        this.current_key_bindings_.set("Digit2", "action_2");
-        this.current_key_bindings_.set("Digit3", "action_3");
-        this.current_key_bindings_.set("Digit4", "action_4");
-        this.current_key_bindings_.set("Digit5", "action_5");
-        this.current_key_bindings_.set("Escape", "display_menu");
     };
 
-    setMousePosition(position: Vec2_T) {
+    canvasCoordsToWorldPosition(coordinates: Vec2_T) {
+        if (this.canvas_aspect_ > this.world_aspect_) {
+            let w = this.world_height_ * this.canvas_aspect_;
+            let x = w * coordinates.x - (w - this.world_width_) / 2;
+            return { x, y: coordinates.y * this.world_height_ }
+        }
+        else if (this.canvas_aspect_ < this.world_aspect_) {
+            let h = this.world_width_ / this.canvas_aspect_
+            let y = h * coordinates.y - (h - this.world_height_) / 2;
+            return { x: coordinates.x * this.world_width_, y }
+        }
+        else {
+            return { x: coordinates.x * this.world_width_, y: coordinates.y * this.world_height_ };
+        }
+    };
+
+    setMousePosition(coordinates: Vec2_T) {
+        let position = this.canvasCoordsToWorldPosition(coordinates);
         let current_delta = Vec2.subtract(position, this.previous_pointer_state_.position);
         this.current_pointer_state_.position.copy(position);
         this.current_pointer_state_.delta.copy(current_delta);

@@ -3,9 +3,11 @@ import {
     HostBinding, DoCheck, OnDestroy, OnInit
 } from "@angular/core";
 
-import { distinctUntilChanged, debounceTime } from "rxjs/operators";
+import { distinctUntilChanged, debounceTime, tap } from "rxjs/operators";
 import { Subject } from "rxjs/Subject";
 import { Subscription } from "rxjs/Subscription";
+import { TouchEventTypes, MultiTouch } from "./touch-utility";
+import { Vec2_T } from "../maths/vec2";
 import { InputManager } from "./input-manager";
 
 @Directive({
@@ -28,17 +30,16 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
 
     readonly resize_events = new Subject<{ width: number, height: number }>();
     private resize_sub_: Subscription;
-    //should_display_menu = false;
 
     constructor(private input_manager_: InputManager, private canvas_ref_: ElementRef) { };
 
     ngOnInit() {
         this.resize_sub_ = this.resize_events.pipe(
             distinctUntilChanged((x, y) => x.width === y.width && x.height === y.height),
-            debounceTime(100)
+            tap(changes => this.input_manager_.canvas_aspect = changes.width / changes.height),
+            debounceTime(50)
         )
         .subscribe((changes) => {
-            this.input_manager_.aspect = changes.width / changes.height;
             this.canvas_width = changes.width;
             this.canvas_height = changes.height;
         });
@@ -73,10 +74,10 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
     @HostListener("mouseup", ["$event"])
     setMouseUp(event: MouseEvent) {
         event.stopPropagation();
-        if (event.button == 0) {
+        if (event.button === 0) {
             this.input_manager_.setMouseButton("left", false);
         }
-        else if (event.button == 2) {
+        else if (event.button === 2) {
             this.input_manager_.setMouseButton("right", false);
         } 
     };
@@ -84,10 +85,10 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
     @HostListener("mousedown", ["$event"])
     setMouseDown(event: MouseEvent) {
         event.stopPropagation();
-        if (event.button == 0) {
+        if (event.button === 0) {
             this.input_manager_.setMouseButton("left", true);
         }
-        else if (event.button == 2) {
+        else if (event.button === 2) {
             this.input_manager_.setMouseButton("right", true);
         }
     };
@@ -113,6 +114,41 @@ export class CanvasController implements OnInit, DoCheck, OnDestroy {
         let y = 1 - (event.clientY / this.client_height);
         this.input_manager_.setMousePosition({ x, y });
         return false;
+    };
+
+    // Touch Events
+    @HostListener("touchstart", ["$event"])
+    setTouchStart(event: TouchEvent) {
+        this.input_manager_.touch_events.next(this.parseTouchEvent(event));
+    };
+
+    @HostListener("touchend", ["$event"])
+    setTouchEnd(event: TouchEvent) {
+        this.input_manager_.touch_events.next(this.parseTouchEvent(event));
+    };
+
+    @HostListener("touchmove", ["$event"])
+    setTouchMove(event: TouchEvent) {
+        event.preventDefault();
+        this.input_manager_.touch_events.next(this.parseTouchEvent(event));
+    };
+
+    @HostListener("touchcancel", ["$event"])
+    setTouchCancel(event: TouchEvent) {
+        this.input_manager_.touch_events.next(this.parseTouchEvent(event));
+    };
+
+    parseTouchEvent(event: TouchEvent): MultiTouch {
+        let touches: { [identifier: number]: Vec2_T } = {};
+        for (let index in event.changedTouches) {
+            if (Number.isNaN(+index)) continue;
+            let touch = event.changedTouches.item(+index);
+            let x = touch.clientX / this.client_width;
+            let y = 1 - (touch.clientY / this.client_height);
+            let point = this.input_manager_.canvasCoordsToWorldPosition({ x, y });
+            touches[touch.identifier] = point;
+        }
+        return { type: (<TouchEventTypes>event.type), touches };
     };
 
     ngOnDestroy() {

@@ -3,49 +3,23 @@ import { Vec2, Vec2_T } from "./vec2";
 
 export class Transform {
    
-    get has_changed() {
-        return this.has_changed_;
+    get matrix() {
+        return this.transform_matrix_;
     };
-
-    get position() {
-        return this.position_;
-    };
-
-    get rotation() {
-        return this.rotation_;
-    };
-
-    get angle() {
-        return this.rotation_.angle;
-    };
-
-    set position(value: Vec2_T) {
-        this.position_.copy(value);
-        this.has_changed_ = true;
-    };
-
-    setRotation(c: number, s: number) {
-        this.rotation_.setRotation(c, s);
-        this.has_changed_ = true;
-    };
-
-    set angle(angle: number) {
-        this.rotation_.setAngle(angle);
-        this.has_changed_ = true;
-    };
-
-    private has_changed_ = true;
-
-    private position_: Vec2;
-    private rotation_: Rot2;
     
-    constructor(position: Vec2_T, rotation = 0) {
-        this.position_ = new Vec2(position);
-        this.rotation_ = Rot2.fromAngle(rotation);
-     };
+    private position_: Vec2;
+    private scale_: Vec2;
+    private rotation_: Rot2;
 
-    reset() {
-        this.has_changed_ = false;
+    private transform_matrix_ = new Float32Array(9);
+
+    constructor(position: Vec2_T, scale: Vec2_T, rotation: number) {
+        this.position_ = new Vec2(position);
+        this.scale_ = new Vec2(scale);
+        this.rotation_ = Rot2.fromAngle(rotation);
+    };
+
+    update() {
     };
 
     applyTransform(point: Vec2_T): Vec2_T {

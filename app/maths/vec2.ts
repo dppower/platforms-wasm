@@ -9,16 +9,6 @@ export class Vec2 {
     static readonly RIGHT: Vec2_C = { x: 1, y: 0 };
     static readonly DOWN: Vec2_C = { x: 0, y: -1 };
 
-    //get x() {
-    //    return this.vector_[0];
-    //};
-
-    //get y() {
-    //    return this.vector_[1];
-    //};
-
-    //get array() { return this.vector_; };
-
     get x() {
         return this.x_;
     };
@@ -47,21 +37,7 @@ export class Vec2 {
         return this.x ** 2 + this.y ** 2;
     };
 
-    //set x(value: number) {
-    //    this.vector_[0] = value;
-    //};
-
-    //set y(value: number) {
-    //    this.vector_[1] = value;
-    //};
-
     constructor(vec?: Vec2_T) {
-        //if (vec) {
-        //    this.vector_ = new Float64Array([vec.x, vec.y]);
-        //} else {
-        //    this.vector_ = new Float64Array([0, 0]);
-        //}
-
         if (vec) {
             this.copy(vec);
         }
@@ -221,11 +197,4 @@ export class Vec2 {
 
     private x_: number;
     private y_: number;
-
-    //copy(a: Vec2_T) {
-    //    this.vector_[0] = a.x;
-    //    this.vector_[1] = a.y;
-    //};
-
-    //private vector_: Float64Array;
 };

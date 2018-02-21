@@ -1,11 +1,12 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
+import { Component, ViewChild, AfterViewInit } from "@angular/core";
 
+import { WebglDirective } from "../webgl/webgl.directive";
 import { RenderLoop } from "./render-loop";
 
 @Component({
-    selector: 'main-canvas',
+    selector: "main-canvas",
     template: `
-    <canvas canvas-controller></canvas>
+    <canvas webgl canvas-controller></canvas>
     `,
     styles: [`
     canvas {
@@ -17,27 +18,25 @@ import { RenderLoop } from "./render-loop";
     }
     `]
 })
-export class MainCanvas implements OnInit, AfterViewInit, OnDestroy {
-    
+export class MainCanvas implements AfterViewInit {
+
+    @ViewChild(WebglDirective) webgl_context_: WebglDirective;
+
     constructor(private render_loop_: RenderLoop) { };
-
-    ngOnInit() {};
-
+    
     ngAfterViewInit() {
-        window.Module = {
-            print: function (text: string) { alert("stdout: " + text); },
-            onRuntimeInitialized: () => {
-                console.log("loaded module.");
-                this.render_loop_.begin();
-            }
-        };
+        this.webgl_context_.createContext();
+        //window.Module = {
+        //    print: function (text: string) { alert("stdout: " + text); },
+        //    onRuntimeInitialized: () => {
+        //        console.log("physics module initialised");
+        //        //this.webgl_context_.begin();
+        //        this.render_loop_.begin();
+        //    }
+        //};
 
-        let script = document.createElement("script");
-        script.src = "wasm/physics.js";
-        document.body.appendChild(script);
-    };
-
-    ngOnDestroy() {
-        this.render_loop_.stop();
+        //let script = document.createElement("script");
+        //script.src = "wasm/physics.js";
+        //document.body.appendChild(script);
     };
 }
