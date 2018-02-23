@@ -4,20 +4,18 @@
 #include <functional>
 #include "render_data.h"
 
-class Player
+class Platform
 {
 public:
-	Player();
-	~Player();
-
-	b2Vec2 get_positon();
-	bool is_colling_below();
-	void init(b2World& world, RenderData* data_ptr);
+	Platform();
+	~Platform();
+	Platform(Platform&& platform);
+	void init(b2World& world, RenderData* data_ptr, int index);
 	void updateRenderData();
 
 private:
-	RenderData* render_data_;
+	RenderData * render_data_;
+	int platform_index_;
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> body_;
-	bool is_colliding_below_;
 };
 

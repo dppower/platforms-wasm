@@ -17,20 +17,30 @@ World::~World()
 {
 }
 
-float World::tick(float time)
+void World::tick(float time_step)
 {
-	accumulated_time_ += time;
-	while (accumulated_time_ >= time_step) {
-		world_.Step(time_step, velocity_iterations, position_iterations);
-		accumulated_time_ -= time_step;
+	//accumulated_time_ += time;
+	//while (accumulated_time_ >= time_step) {
+	world_.Step(time_step, velocity_iterations, position_iterations);
+		//accumulated_time_ -= time_step;
+	//}
+	//return accumulated_time_;
+	player_.updateRenderData();
+	for (auto& platform : platforms_) {
+		platform.updateRenderData();
 	}
-	return accumulated_time_;
 }
 
-void World::init(float player_x, float player_y)
+void World::init(float width, float height, int data_index, int platform_count)
 {
-	world_bounds_.init(world_);
-	player_.init(world_, player_x, player_y);
+	RenderData* data_ptr = reinterpret_cast<RenderData*>(data_index);
+	world_bounds_.init(world_, width, height);
+	player_.init(world_, data_ptr);
+
+	for (int i = 0; i < platform_count; i++) {
+		platforms_.emplace_back();
+		platforms_[i].init(world_, data_ptr, i + 1);
+	}
 }
 
 EMSCRIPTEN_BINDINGS(physics) {

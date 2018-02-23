@@ -9,7 +9,7 @@ public:
 	WorldBounds();
 	~WorldBounds();
 	
-	void init(b2World& world);
+	void init(b2World& world, float width, float height);
 
 private:
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> origin;

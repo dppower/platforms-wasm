@@ -4,10 +4,13 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="world_bounds.cpp" />
     <ClCompile Include="world.cpp" />
+    <ClCompile Include="platform.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h" />
     <ClInclude Include="world_bounds.h" />
     <ClInclude Include="world.h" />
+    <ClInclude Include="platform.h" />
+    <ClInclude Include="render_data.h" />
   </ItemGroup>
 </Project>

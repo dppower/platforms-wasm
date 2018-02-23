@@ -9,6 +9,7 @@ import { WEBGL, WEBGL_EXTENSIONS } from "./webgl-tokens";
 import { SHADER_PROVIDERS, BASIC_SHADER } from "../shaders/shader-providers";
 import { MESH_PROVIDERS, PLATFORMS, PLAYER, SKY, RGB_COLORS } from "../geometry/mesh-providers";
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "../physics/constant-tokens";
+import { WorldState } from "../physics/world-state";
 
 @Directive({
     selector: "[webgl]"
@@ -71,7 +72,7 @@ export class WebglDirective {
                     useClass: SceneRenderer,
                     deps: [WEBGL, BASIC_SHADER, SKY, PLATFORMS, PLAYER, RGB_COLORS,
                         PLAYER_DIMENSIONS, PLATFORM_DIMENSIONS, WORLD_WIDTH, WORLD_HEIGHT,
-                        Camera2d, RenderLoop
+                        WorldState, Camera2d, RenderLoop
                     ]
                 },
                 ...SHADER_PROVIDERS,

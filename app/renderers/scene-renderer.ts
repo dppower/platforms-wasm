@@ -3,6 +3,7 @@ import { Injectable, Inject } from "@angular/core";
 import { Mesh } from "../geometry/mesh";
 import { PLAYER, PLATFORMS, SKY, RGB_COLORS } from "../geometry/mesh-providers";
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "../physics/constant-tokens";
+import { WorldState} from "../physics/world-state";
 import { BoxDimensions } from "../physics/box-dimensions";
 import { ShaderProgram } from "../shaders/shader-program";
 import { BASIC_SHADER } from "../shaders/shader-providers";
@@ -24,6 +25,7 @@ export class SceneRenderer {
         @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: BoxDimensions[],
         @Inject(WORLD_WIDTH) private world_width_: number,
         @Inject(WORLD_HEIGHT) private world_height_: number,
+        private world_state_: WorldState,
         private main_camera_: Camera2d,
         private render_loop_: RenderLoop
     ) { };
@@ -50,6 +52,13 @@ export class SceneRenderer {
     };
 
     updateScene(dt: number) {
+        this.world_state_.updateWorld(dt);
+        if (this.world_state_.initialised) {
+            this.player_.updateTransform(this.world_state_.getTransform(0));
+            this.platforms_.forEach((platform, index) => {
+                platform.updateTransform(this.world_state_.getTransform(index + 1));
+            })
+        }
         this.main_camera_.updateViewDimensions();
     };
 

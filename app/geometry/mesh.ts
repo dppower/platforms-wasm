@@ -53,6 +53,22 @@ export class Mesh {
         ]);
         this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
     };
+
+    updateTransform(data: Float32Array, tz: number = 1) {
+        let x = data[0];
+        let y = data[1];
+        let hw = data[2] / 2;
+        let hh = data[3] / 2;
+        let c = data[4];
+        let s = data[5];
+        this.transform_matrix_.set([
+            hw * c, hw * -s, 0, 0,
+            hh * s, hh * c, 0, 0,
+            0, 0, 1, 0,
+            x, y, tz, 1
+        ]);
+        this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
+    };
     
     setUniformColor(array: number[], id: number) {
         this.color_id_ = id;
@@ -61,7 +77,7 @@ export class Mesh {
 
     drawMesh(shader_program: ShaderProgram) {
 
-        this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
+        //this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
         this.webgl_context_.uniformMatrix4fv(
             shader_program.getUniform("u_view_matrix"), false, this.view_matrix_
         );

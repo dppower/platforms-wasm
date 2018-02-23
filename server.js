@@ -26,9 +26,6 @@ app.get("*.wasm", (req, res) => {
             if (err) {
                 next(err);
             }
-            else {
-                console.log(`Sent file: ${file_path}.`);
-            }
         }
     );
 });
