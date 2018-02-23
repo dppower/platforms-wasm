@@ -13,7 +13,7 @@ public:
 	World();
 	~World();
 	
-	void tick(float time);
+	void tick(float time, bool jump, int move);
 	void init(float width, float height, int data_index, int count);
 
 private:

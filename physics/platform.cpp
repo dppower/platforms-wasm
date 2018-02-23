@@ -39,7 +39,7 @@ void Platform::init(b2World & world, RenderData * data_ptr, int index)
 	);
 
 	b2FixtureDef fixtureDef;
-	fixtureDef.density = 1.0f;
+	fixtureDef.density = 2.6f;
 
 	b2PolygonShape body_rect;
 	body_rect.SetAsBox(hw, hh);

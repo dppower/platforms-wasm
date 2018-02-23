@@ -54,11 +54,11 @@ export class Mesh {
         this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
     };
 
-    updateTransform(data: Float32Array, tz: number = 1) {
-        let x = data[0];
-        let y = data[1];
+    updateTransform(data: Float32Array, tz: number = 1, offset_x = 0, offset_y = 0, use_width = false) {
+        let x = data[0] + offset_x;
+        let y = data[1] + offset_y;
         let hw = data[2] / 2;
-        let hh = data[3] / 2;
+        let hh = use_width ? hw : data[3] / 2;
         let c = data[4];
         let s = data[5];
         this.transform_matrix_.set([

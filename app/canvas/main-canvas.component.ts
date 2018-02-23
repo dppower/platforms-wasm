@@ -6,7 +6,7 @@ import { WorldState } from "../physics/world-state";
 @Component({
     selector: "main-canvas",
     template: `
-    <canvas webgl canvas-controller></canvas>
+    <canvas webgl canvas-controller tabindex="0"></canvas>
     `,
     styles: [`
     canvas {

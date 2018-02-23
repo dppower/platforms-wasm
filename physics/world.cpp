@@ -17,8 +17,12 @@ World::~World()
 {
 }
 
-void World::tick(float time_step)
+void World::tick(float time_step, bool jump, int move)
 {
+	if (jump) {
+		player_.jump();
+	}
+	this->player_.move(move);
 	//accumulated_time_ += time;
 	//while (accumulated_time_ >= time_step) {
 	world_.Step(time_step, velocity_iterations, position_iterations);

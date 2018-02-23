@@ -121,7 +121,8 @@ export class InputManager {
     setKeyDown(key: string) {
         let code = this.parseKeyCode(key);
         let action = this.current_key_bindings_.get(code);
-        if (action != undefined) {
+        console.log(`code: ${code}, action: ${action}.`);
+        if (action !== undefined) {
             this.current_key_state_[action] = true;
         }
     };
@@ -129,7 +130,7 @@ export class InputManager {
     setKeyUp(key: string) {
         let code = this.parseKeyCode(key);
         let action = this.current_key_bindings_.get(code);
-        if (action != undefined) {
+        if (action !== undefined) {
             this.current_key_state_[action] = false;
         }
     };

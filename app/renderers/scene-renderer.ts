@@ -19,7 +19,7 @@ export class SceneRenderer {
         @Inject(BASIC_SHADER) private shader_: ShaderProgram,
         @Inject(SKY) private sky_: Mesh,
         @Inject(PLATFORMS) private platforms_: Mesh[],
-        @Inject(PLAYER) private player_: Mesh,
+        @Inject(PLAYER) private player_: Mesh[],
         @Inject(RGB_COLORS) private rgb_colors: number[][],
         @Inject(PLAYER_DIMENSIONS) private player_dimensions_: BoxDimensions,
         @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: BoxDimensions[],
@@ -38,8 +38,24 @@ export class SceneRenderer {
         let hw = this.world_width_ / 2;
         let hh = this.world_height_ / 2;
         this.sky_.initTransform(hw, hh, 10, hw, hh, 0);
-        
-        this.player_.initTransform(this.player_dimensions_.x, this.player_dimensions_.y, 1, 0.5, 1, 0);
+
+        // Player rect
+        this.player_[0].initTransform(
+            this.player_dimensions_.x, this.player_dimensions_.y, 1,
+            this.player_dimensions_.w / 2, this.player_dimensions_.h / 2, 0
+        );
+
+        // Player lower circle
+        this.player_[1].initTransform(
+            this.player_dimensions_.x, this.player_dimensions_.y - (this.player_dimensions_.h / 2), 1,
+            this.player_dimensions_.w / 2, this.player_dimensions_.w / 2, 0
+        );
+
+        // Player upper circle
+        this.player_[2].initTransform(
+            this.player_dimensions_.x, this.player_dimensions_.y + (this.player_dimensions_.h / 2), 1,
+            this.player_dimensions_.w / 2, this.player_dimensions_.w / 2, 0
+        );
 
         this.platforms_.forEach((platform, index) => {
             platform.setUniformColor(this.rgb_colors[index], index);
@@ -54,7 +70,15 @@ export class SceneRenderer {
     updateScene(dt: number) {
         this.world_state_.updateWorld(dt);
         if (this.world_state_.initialised) {
-            this.player_.updateTransform(this.world_state_.getTransform(0));
+
+            this.player_[0].updateTransform(this.world_state_.getTransform(0));
+
+            // Player lower circle
+            this.player_[1].updateTransform(this.world_state_.getTransform(0), 1, 0, -this.player_dimensions_.h / 2, true);
+
+            // Player upper circle
+            this.player_[2].updateTransform(this.world_state_.getTransform(0), 1, 0, +this.player_dimensions_.h / 2, true);
+
             this.platforms_.forEach((platform, index) => {
                 platform.updateTransform(this.world_state_.getTransform(index + 1));
             })
@@ -71,7 +95,7 @@ export class SceneRenderer {
 
         this.sky_.drawMesh(this.shader_);
 
-        this.player_.drawMesh(this.shader_);
+        this.player_.forEach(mesh => mesh.drawMesh(this.shader_));
         this.platforms_.forEach(platform => platform.drawMesh(this.shader_));
     };
 }

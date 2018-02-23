@@ -58,17 +58,33 @@ void Player::init(b2World& world, RenderData* data_ptr)
 	fixtureDef.shape = &upper_circle;
 	body_->CreateFixture(&fixtureDef);
 
+	b2PolygonShape body_rect;
+	body_rect.SetAsBox(hw, hh);
+	fixtureDef.shape = &body_rect;
+	body_->CreateFixture(&fixtureDef);
+
 	b2CircleShape jump_sensor;
 	jump_sensor.m_p.Set(0.0f, -hh - 0.1f);
 	jump_sensor.m_radius = hw;
 	fixtureDef.shape = &jump_sensor;
 	fixtureDef.isSensor = true;
 	body_->CreateFixture(&fixtureDef);
+}
 
-	b2PolygonShape body_rect;
-	body_rect.SetAsBox(hw, hh);
-	fixtureDef.shape = &body_rect;
-	body_->CreateFixture(&fixtureDef);
+void Player::jump()
+{
+	float impulse = body_->GetMass() * 8;
+	body_->ApplyLinearImpulseToCenter(b2Vec2(0, impulse), true);
+}
+
+void Player::move(int direction)
+{
+	b2Vec2 current_velocity = body_->GetLinearVelocity();
+	float move_speed = b2Min(b2Max(current_velocity.x + direction * 0.2f,  -10.0f), 10.0f);
+	move_speed *= 0.95f;
+	float velocity_x = move_speed - current_velocity.x;
+	float impulse = body_->GetMass() * velocity_x;
+	body_->ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
 }
 
 void Player::updateRenderData()

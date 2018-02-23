@@ -14,8 +14,7 @@
     },
   "files": [
       "./app/main.ts",
-      "./app/gltf.d.ts",
-      "./app/webgl2.d.ts"
+      "./app/typings.d.ts"
   ],
   "angularCompilerOptions": {
    "skipMetadataEmit": true

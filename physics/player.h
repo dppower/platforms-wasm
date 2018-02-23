@@ -13,6 +13,8 @@ public:
 	b2Vec2 get_positon();
 	bool is_colling_below();
 	void init(b2World& world, RenderData* data_ptr);
+	void jump();
+	void move(int direction);
 	void updateRenderData();
 
 private:

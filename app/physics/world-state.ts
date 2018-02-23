@@ -2,6 +2,7 @@
 
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "./constant-tokens";
 import { BoxDimensions } from "./box-dimensions";
+import { InputManager } from "../canvas/input-manager";
 
 @Injectable()
 export class WorldState {
@@ -22,7 +23,8 @@ export class WorldState {
         @Inject(WORLD_WIDTH) private world_width_: number,
         @Inject(WORLD_HEIGHT) private world_height_: number,
         @Inject(PLATFORM_DIMENSIONS) private platforms_: BoxDimensions[],
-        @Inject(PLAYER_DIMENSIONS) private player_: BoxDimensions
+        @Inject(PLAYER_DIMENSIONS) private player_: BoxDimensions,
+        private input_manager_: InputManager
     ) { };
 
     initWorld() {
@@ -60,7 +62,17 @@ export class WorldState {
 
     updateWorld(dt: number) {
         if (!this.is_initialised_) return;
-        this.world_module_.tick(dt);
+
+        let can_jump = this.input_manager_.isKeyPressed("jump");
+        let move: -1 | 0 | 1 = 0;
+        if (this.input_manager_.isKeyDown("left")) {
+            move = -1;
+        }
+        else if (this.input_manager_.isKeyDown("right")) {
+            move = 1;
+        }
+        //console.log(can_jump);
+        this.world_module_.tick(dt, can_jump, move);
     };
 
     dispose() {

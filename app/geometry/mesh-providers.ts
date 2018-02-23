@@ -67,5 +67,7 @@ export const MESH_PROVIDERS: StaticProvider[] = [
         deps: [WEBGL, CIRCLE_MESH],
         multi: true
     },
-    { provide: PLAYER, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d] },
+    { provide: PLAYER, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d], multi: true },
+    { provide: PLAYER, useClass: Mesh, deps: [WEBGL, CIRCLE_BUFFER, Camera2d], multi: true },
+    { provide: PLAYER, useClass: Mesh, deps: [WEBGL, CIRCLE_BUFFER, Camera2d], multi: true }
 ];
