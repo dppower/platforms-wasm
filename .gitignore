@@ -3,7 +3,6 @@ obj/
 build-aot/
 build/
 node_modules/
-wasm/
 .vs/
 Debug/
 *.db
