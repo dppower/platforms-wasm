@@ -14,7 +14,7 @@ export const PHYSICS_PROVIDERS: StaticProvider[] = [
     },
     {
         provide: PLAYER_DIMENSIONS,
-        useValue: (<BoxDimensions>{ x: 2, y: 0.9, w: 0.8, h: 1, r: 0 })
+        useValue: (<BoxDimensions>{ x: 2, y: 2.9, w: 0.8, h: 1, r: 0 })
     },
     {
         provide: WorldState,

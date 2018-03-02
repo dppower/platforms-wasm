@@ -5,6 +5,7 @@
     <ClCompile Include="world_bounds.cpp" />
     <ClCompile Include="world.cpp" />
     <ClCompile Include="platform.cpp" />
+    <ClCompile Include="contact_listener.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h" />
@@ -12,5 +13,6 @@
     <ClInclude Include="world.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="render_data.h" />
+    <ClInclude Include="contact_listener.h" />
   </ItemGroup>
 </Project>

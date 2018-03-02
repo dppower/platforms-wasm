@@ -6,6 +6,7 @@
 #include "platform.h"
 #include "world_bounds.h"
 #include "render_data.h"
+#include "contact_listener.h"
 
 class World
 {
@@ -17,6 +18,7 @@ public:
 	void init(float width, float height, int data_index, int count);
 
 private:
+	ContactListener contact_listener_;
 	b2World world_;
 	Player player_;
 	std::vector<Platform> platforms_;

@@ -121,12 +121,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="contact_listener.cpp" />
     <ClCompile Include="platform.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="world.cpp" />
     <ClCompile Include="world_bounds.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="contact_listener.h" />
     <ClInclude Include="platform.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="render_data.h" />

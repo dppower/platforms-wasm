@@ -1,7 +1,9 @@
 #include "world_bounds.h"
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
+#include <Box2D/Dynamics/b2Fixture.h>
 
-WorldBounds::WorldBounds()
+WorldBounds::WorldBounds() :
+	ground_tag_("ground")
 {
 }
 
@@ -21,9 +23,13 @@ void WorldBounds::init(b2World& world, float width, float height) {
 	);
 
 	// Ground Box
-	b2PolygonShape boundingBox;
+	b2PolygonShape boundingBox;	
 	boundingBox.SetAsBox(width * 1.5f, height * 0.5f, b2Vec2(width * 0.5f, height * -0.5f), 0);
-	origin->CreateFixture(&boundingBox, 0.0f);
+	b2FixtureDef fixtureDef;
+	fixtureDef.density = 0.0f;
+	fixtureDef.shape = &boundingBox;
+	fixtureDef.userData = static_cast<void*>(&ground_tag_);
+	origin->CreateFixture(&fixtureDef);
 
 	// Left Box
 	boundingBox.SetAsBox(width * 0.5f, height * 0.5f, b2Vec2(width * -0.5f, height * 0.5f), 0);

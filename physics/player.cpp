@@ -4,8 +4,12 @@
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Common/b2Math.h>
+#include <numeric>
+#include <algorithm>
+#include <emscripten/emscripten.h>
 
-Player::Player()
+Player::Player() :
+	is_colliding_below_(false), jump_sensor_tag_("jump")
 {
 }
 
@@ -18,9 +22,37 @@ b2Vec2 Player::get_positon()
 	return body_->GetPosition();
 }
 
-bool Player::is_colling_below()
+bool Player::is_colliding_below()
 {
 	return is_colliding_below_;
+}
+
+void Player::handleJumpContact(b2Contact * contact)
+{	
+	std::string& tag = *(static_cast<std::string*>(contact->GetFixtureA()->GetUserData()));
+	if (tag == jump_sensor_tag_) {
+		jump_contacts_.push_back(contact);
+	}
+	else {
+		tag = *(static_cast<std::string*>(contact->GetFixtureB()->GetUserData()));
+		if (tag == jump_sensor_tag_) {
+			jump_contacts_.push_back(contact);
+		}
+	}
+}
+
+void Player::clearJumpContacts(b2Contact * contact)
+{
+	std::string& a = *(static_cast<std::string*>(contact->GetFixtureA()->GetUserData()));
+	std::string& b = *(static_cast<std::string*>(contact->GetFixtureB()->GetUserData()));
+
+	if (a == jump_sensor_tag_ || b == jump_sensor_tag_) {
+		auto it = std::remove_if(
+			jump_contacts_.begin(), jump_contacts_.end(), 
+			[](b2Contact* contact) { return !contact || !(contact->IsTouching()); }
+		);
+		jump_contacts_.erase(it, jump_contacts_.end());
+	}
 }
 
 void Player::init(b2World& world, RenderData* data_ptr)
@@ -68,13 +100,51 @@ void Player::init(b2World& world, RenderData* data_ptr)
 	jump_sensor.m_radius = hw;
 	fixtureDef.shape = &jump_sensor;
 	fixtureDef.isSensor = true;
+	fixtureDef.userData = static_cast<void*>(&jump_sensor_tag_);
 	body_->CreateFixture(&fixtureDef);
 }
 
 void Player::jump()
 {
-	float impulse = body_->GetMass() * 8;
-	body_->ApplyLinearImpulseToCenter(b2Vec2(0, impulse), true);
+	// Check jump normals
+	std::vector<b2Vec2> normals;
+	
+	std::transform(jump_contacts_.begin(), jump_contacts_.end(),
+		std::back_inserter(normals), [this](b2Contact* contact) {
+			b2WorldManifold manifold;
+			contact->GetWorldManifold(&manifold);
+			std::string& tag = *(static_cast<std::string*>(contact->GetFixtureA()->GetUserData()));
+			if (tag == jump_sensor_tag_) {
+				return manifold.normal;
+			}
+			else {
+				return -1 * manifold.normal;
+			}
+		}
+	);
+
+	b2Vec2 normal = std::accumulate(
+		normals.begin(), normals.end(), 
+		b2Vec2_zero, [](b2Vec2 a, b2Vec2 b) {			
+			return a + b; 
+		}
+	);
+	normal.Normalize();
+
+	b2Vec2 up(0.0, 1.0);
+	float32 dp = b2Dot(normal, up);
+
+	if (dp > 0.5) {
+		is_colliding_below_ = true;
+	}
+	else {
+		is_colliding_below_ = false;
+	}
+
+	if (is_colliding_below_) {
+		float impulse = body_->GetMass() * 8;
+		body_->ApplyLinearImpulseToCenter(b2Vec2(0, impulse), true);
+	}
 }
 
 void Player::move(int direction)
@@ -85,6 +155,23 @@ void Player::move(int direction)
 	float velocity_x = move_speed - current_velocity.x;
 	float impulse = body_->GetMass() * velocity_x;
 	body_->ApplyLinearImpulseToCenter(b2Vec2(impulse, 0), true);
+}
+
+void Player::update(float dt)
+{
+	//clearJumpContacts();
+	std::string output("'count: " + std::to_string(jump_contacts_.size()) + ", contacts ids: ");
+
+	for (auto contact : jump_contacts_) {
+		output += "(";
+		output += *(static_cast<std::string*>(contact->GetFixtureA()->GetUserData()));
+		output += ",";
+		output += *(static_cast<std::string*>(contact->GetFixtureB()->GetUserData()));
+		output += ")";
+		output += ",";
+	}
+	output += "'";
+	emscripten_run_script(("console.log(" + output +  ")").c_str());
 }
 
 void Player::updateRenderData()

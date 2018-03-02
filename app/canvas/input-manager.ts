@@ -121,7 +121,6 @@ export class InputManager {
     setKeyDown(key: string) {
         let code = this.parseKeyCode(key);
         let action = this.current_key_bindings_.get(code);
-        console.log(`code: ${code}, action: ${action}.`);
         if (action !== undefined) {
             this.current_key_state_[action] = true;
         }
