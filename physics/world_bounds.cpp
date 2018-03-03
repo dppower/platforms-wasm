@@ -22,24 +22,30 @@ void WorldBounds::init(b2World& world, float width, float height) {
 		[&world](b2Body*  body) { world.DestroyBody(body); }
 	);
 
-	// Ground Box
-	b2PolygonShape boundingBox;	
-	boundingBox.SetAsBox(width * 1.5f, height * 0.5f, b2Vec2(width * 0.5f, height * -0.5f), 0);
 	b2FixtureDef fixtureDef;
 	fixtureDef.density = 0.0f;
+	// Ground Box	
+	b2PolygonShape boundingBox;	
+	boundingBox.SetAsBox(width * 1.5f, height * 0.5f, b2Vec2(width * 0.5f, height * -0.5f), 0);
 	fixtureDef.shape = &boundingBox;
 	fixtureDef.userData = static_cast<void*>(&ground_tag_);
 	origin->CreateFixture(&fixtureDef);
 
 	// Left Box
 	boundingBox.SetAsBox(width * 0.5f, height * 0.5f, b2Vec2(width * -0.5f, height * 0.5f), 0);
-	origin->CreateFixture(&boundingBox, 0.0f);
+	fixtureDef.shape = &boundingBox;
+	fixtureDef.userData = nullptr;
+	origin->CreateFixture(&fixtureDef);
 
 	// Right Box
 	boundingBox.SetAsBox(width * 0.5f, height * 0.5f, b2Vec2(width * 1.5f, height * 0.5f), 0);
-	origin->CreateFixture(&boundingBox, 0.0f);
+	fixtureDef.shape = &boundingBox;
+	fixtureDef.userData = nullptr;
+	origin->CreateFixture(&fixtureDef);
 
 	// Top Box
 	boundingBox.SetAsBox(width * 1.5f, height * 0.5f, b2Vec2(width * 0.5f, height * 1.5f), 0);
-	origin->CreateFixture(&boundingBox, 0.0f);
+	fixtureDef.shape = &boundingBox;
+	fixtureDef.userData = nullptr;
+	origin->CreateFixture(&fixtureDef);
 }

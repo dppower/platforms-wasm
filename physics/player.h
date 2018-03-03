@@ -16,9 +16,9 @@ public:
 
 	b2Vec2 get_positon();
 	bool is_colliding_below();
-	void handleJumpContact(b2Contact* contact);
-	void clearJumpContacts(b2Contact* contact);
-	//void clearJumpContacts();
+	void handleContactBegin(b2Contact* contact);
+	void handleContactEnd(b2Contact* contact);
+	void disableJumpContact(b2Contact* contact);
 	void init(b2World& world, RenderData* data_ptr);
 	void jump();
 	void move(int direction);
@@ -26,8 +26,12 @@ public:
 	void updateRenderData();
 
 private:
+	void clearJumpContacts();
+	void updateCollidingBelow();
 	std::vector<b2Contact*> jump_contacts_;
 	std::string jump_sensor_tag_;
+	std::string upper_tag_;
+	std::string lower_tag_;
 	RenderData* render_data_;
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> body_;
 	bool is_colliding_below_;

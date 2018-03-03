@@ -14,12 +14,17 @@ ContactListener::~ContactListener()
 void ContactListener::BeginContact(b2Contact * contact)
 {
 	// Check for colliding below:
-	player_->handleJumpContact(contact);
+	player_->handleContactBegin(contact);
 	
 	//handle other contacts...
 }
 
 void ContactListener::EndContact(b2Contact * contact)
 {
-	player_->clearJumpContacts(contact);
+	player_->handleContactEnd(contact);
+}
+
+void ContactListener::PreSolve(b2Contact * contact, const b2Manifold * oldManifold)
+{
+	player_->disableJumpContact(contact);
 }

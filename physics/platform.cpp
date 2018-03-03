@@ -44,6 +44,7 @@ void Platform::init(b2World & world, RenderData * data_ptr, int index)
 	b2PolygonShape body_rect;
 	body_rect.SetAsBox(hw, hh);
 	fixtureDef.shape = &body_rect;
+	fixtureDef.userData = nullptr;
 	body_->CreateFixture(&fixtureDef);
 }
 
