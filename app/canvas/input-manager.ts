@@ -5,15 +5,15 @@ import { TouchEventTypes, MultiTouch } from "./touch-utility";
 import { WORLD_HEIGHT, WORLD_WIDTH } from "../physics/constant-tokens";
 import { Vec2, Vec2_T } from "../maths/vec2";
 
-export interface InputState {
+export interface KeyState {
     left: boolean,
     right: boolean,
     jump: boolean
 }
 
-export type InputTypes = keyof InputState;
+export type KeyActions = keyof KeyState;
 
-const InitialInputState: InputState = {
+const InitialKeyState: KeyState = {
     left: false,
     right: false,
     jump: false
@@ -64,13 +64,13 @@ export class InputManager {
 
     readonly touch_events = new Subject<MultiTouch>();
 
-    private previous_key_state_: InputState;
-    private current_key_state_: InputState;
+    private previous_key_state_: KeyState;
+    private current_key_state_: KeyState;
 
     private previous_pointer_state_: PointerState;
     private current_pointer_state_: PointerState;
 
-    private current_key_bindings_ = new Map<string, InputTypes>();
+    private current_key_bindings_ = new Map<string, KeyActions>();
 
     private canvas_aspect_: number = 1.5;
     private world_aspect_: number;
@@ -81,8 +81,8 @@ export class InputManager {
     ) {
         this.world_aspect_ = this.world_width_ / this.world_height_;
         // Initialise state
-        this.previous_key_state_ = Object.assign({}, InitialInputState);
-        this.current_key_state_ = Object.assign({}, InitialInputState);
+        this.previous_key_state_ = Object.assign({}, InitialKeyState);
+        this.current_key_state_ = Object.assign({}, InitialKeyState);
         this.previous_pointer_state_ = Object.assign({}, InitialPointerState);
         this.current_pointer_state_ = Object.assign({}, InitialPointerState);
         // set default key code bindings
@@ -148,22 +148,22 @@ export class InputManager {
         return code;
     };
 
-    isKeyDown(action: InputTypes) {
+    isKeyDown(action: KeyActions) {
         return this.current_key_state_[action];
     };
 
-    wasKeyDown(action: InputTypes) {
+    wasKeyDown(action: KeyActions) {
         return this.previous_key_state_[action];
     };
 
-    isKeyPressed(action: InputTypes) {
+    isKeyPressed(action: KeyActions) {
         if (this.isKeyDown(action) === true && this.wasKeyDown(action) === false) {
             return true;
         }
         return false;
     };
 
-    wasKeyReleased(action: InputTypes) {
+    wasKeyReleased(action: KeyActions) {
         if (this.isKeyDown(action) === false && this.wasKeyDown(action) === true) {
             return true;
         }
@@ -194,6 +194,23 @@ export class InputManager {
             return true;
         }
         return false;
+    };
+
+    updateInputStates(input_pointer: number) {
+        this.copyInputsToHeap(input_pointer, this.previous_pointer_state_, this.previous_key_state_);
+        this.copyInputsToHeap(input_pointer + 28, this.current_pointer_state_, this.current_key_state_);
+    };
+
+    copyInputsToHeap(offset: number, pointer_state: PointerState, key_state: KeyState) {
+        let int_array = new Uint32Array(Module.HEAPU8.buffer, offset, 28);
+        int_array[0] = +key_state.left;
+        int_array[1] = +key_state.right;
+        int_array[2] = +key_state.jump;
+        int_array[3] = +pointer_state.left;
+        int_array[4] = +pointer_state.right;
+        let float_array = new Float32Array(Module.HEAPU8.buffer, offset, 28);
+        float_array[5] = pointer_state.position.x;
+        float_array[6] = pointer_state.position.y;
     };
 
     update() {

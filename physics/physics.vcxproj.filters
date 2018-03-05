@@ -14,5 +14,6 @@
     <ClInclude Include="platform.h" />
     <ClInclude Include="render_data.h" />
     <ClInclude Include="contact_listener.h" />
+    <ClInclude Include="input_component.h" />
   </ItemGroup>
 </Project>

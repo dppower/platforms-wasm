@@ -26,13 +26,13 @@ export class MainCanvas implements AfterViewInit {
     
     ngAfterViewInit() {
         this.webgl_context_.createContext();
-        window.Module = {
+        window.Module = (<Module>{
             print: function (text: string) { alert("stdout: " + text); },
             onRuntimeInitialized: () => {
                 console.log("physics module initialised");
                 this.world_state_.initWorld();
             }
-        };
+        });
 
         let script = document.createElement("script");
         script.src = "wasm/physics.js";

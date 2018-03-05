@@ -134,10 +134,11 @@ void Player::updateCollidingBelow()
 	}
 }
 
-void Player::init(b2World& world, RenderData* data_ptr)
+void Player::init(b2World& world, RenderData* data_ptr, InputComponent* input_component)
 {
 	render_data_ = data_ptr;
-	
+	input_component_ = input_component;
+
 	float x = render_data_->x;
 	float y = render_data_->y;
 	float hw = render_data_->w / 2;
@@ -197,8 +198,15 @@ void Player::jump()
 	}
 }
 
-void Player::move(int direction)
+void Player::move()
 {
+	int direction = 0;
+	if (input_component_->isKeyDown(InputActions::MoveLeft)) {
+		direction -= 1;
+	}
+	if (input_component_->isKeyDown(InputActions::MoveRight)) {
+		direction += 1;
+	}
 	b2Vec2 current_velocity = body_->GetLinearVelocity();
 	float move_speed = b2Min(b2Max(current_velocity.x + direction * 0.2f,  -10.0f), 10.0f);
 	move_speed *= 0.95f;
@@ -209,6 +217,10 @@ void Player::move(int direction)
 
 void Player::update(float dt)
 {
+	move();
+	if (input_component_->isKeyPressed(InputActions::Jump)) {
+		jump();
+	}
 }
 
 void Player::updateRenderData()

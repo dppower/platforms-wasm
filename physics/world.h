@@ -7,6 +7,7 @@
 #include "world_bounds.h"
 #include "render_data.h"
 #include "contact_listener.h"
+#include "input_component.h"
 
 class World
 {
@@ -14,10 +15,11 @@ public:
 	World();
 	~World();
 	
-	void tick(float time, bool jump, int move);
-	void init(float width, float height, int data_index, int count);
+	void tick(float time);
+	void init(float width, float height, int input_index, int data_index, int count);
 
 private:
+	InputComponent input_component_;
 	ContactListener contact_listener_;
 	b2World world_;
 	Player player_;

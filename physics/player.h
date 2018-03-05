@@ -7,6 +7,7 @@
 #include <functional>
 #include <string>
 #include "render_data.h"
+#include "input_component.h"
 
 class Player
 {
@@ -19,9 +20,9 @@ public:
 	void handleContactBegin(b2Contact* contact);
 	void handleContactEnd(b2Contact* contact);
 	void disableJumpContact(b2Contact* contact);
-	void init(b2World& world, RenderData* data_ptr);
+	void init(b2World& world, RenderData* data_ptr, InputComponent* input_component);
 	void jump();
-	void move(int direction);
+	void move();
 	void update(float dt);
 	void updateRenderData();
 
@@ -33,6 +34,7 @@ private:
 	std::string upper_tag_;
 	std::string lower_tag_;
 	RenderData* render_data_;
+	InputComponent* input_component_;
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> body_;
 	bool is_colliding_below_;
 };

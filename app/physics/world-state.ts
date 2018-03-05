@@ -10,12 +10,14 @@ export class WorldState {
     get initialised() {
         return this.is_initialised_;
     };
-
+    
     private is_initialised_ = false;
-    private world_module_: any;
+    private world_module_: World;
 
-    private array_pointer_: number; //=> Byte
-    private array_offset_: number; //=> Float
+    private data_pointer_: number; //=> Byte
+    private data_offset_: number; //=> Float
+
+    private input_pointer_: number;
 
     private platform_count_: number;
 
@@ -29,8 +31,10 @@ export class WorldState {
 
     initWorld() {
         this.initTransforms();
-        this.world_module_ = new window.Module.World();
-        this.world_module_.init(this.world_width_, this.world_height_, this.array_pointer_, this.platform_count_);
+        this.world_module_ = new Module.World();
+        this.world_module_.init(this.world_width_, this.world_height_,
+            this.input_pointer_, this.data_pointer_, this.platform_count_
+        );
         this.is_initialised_ = true;
     };
 
@@ -49,13 +53,17 @@ export class WorldState {
             );
         });
 
-        this.array_pointer_ = Module._malloc(initial_values.length * 4);
-        this.array_offset_ = this.array_pointer_ >> 2;
-        Module.HEAPF32.set(initial_values, this.array_offset_);
+        // Allocate memory for transforms
+        this.data_pointer_ = Module._malloc(initial_values.length * 4);
+        this.data_offset_ = this.data_pointer_ >> 2;
+        Module.HEAPF32.set(initial_values, this.data_offset_);
+
+        // Allocate memory for inputs
+        this.input_pointer_ = Module._malloc(56);
     };
 
     getTransform(index: number): Float32Array {
-        let begin = this.array_offset_ + index * 6;
+        let begin = this.data_offset_ + index * 6;
         let end = begin + 6;
         return Module.HEAPF32.subarray(begin, end);
     };
@@ -63,19 +71,12 @@ export class WorldState {
     updateWorld(dt: number) {
         if (!this.is_initialised_) return;
 
-        let can_jump = this.input_manager_.isKeyPressed("jump");
-        let move: -1 | 0 | 1 = 0;
-        if (this.input_manager_.isKeyDown("left")) {
-            move = -1;
-        }
-        else if (this.input_manager_.isKeyDown("right")) {
-            move = 1;
-        }
-        //console.log(can_jump);
-        this.world_module_.tick(dt, can_jump, move);
+        this.input_manager_.updateInputStates(this.input_pointer_);
+        this.world_module_.tick(dt);
     };
 
     dispose() {
-        Module._free(this.array_pointer_);
+        Module._free(this.data_pointer_);
+        Module._free(this.input_pointer_);
     };
 }

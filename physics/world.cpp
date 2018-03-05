@@ -1,8 +1,8 @@
 #include "world.h"
 #include <emscripten/bind.h>
 
-const float time_step = 0.02;
-const int32 velocity_iterations = 6;
+//const float time_step = 0.02;
+const int32 velocity_iterations = 4;
 const int32 position_iterations = 2;
 
 const b2Vec2 gravity(0.0f, -9.8f);
@@ -17,32 +17,27 @@ World::~World()
 {
 }
 
-void World::tick(float time_step, bool jump, int move)
+void World::tick(float time_step)
 {
-	if (jump) {
-		player_.jump();
-	}
-	player_.move(move);
 	player_.update(time_step);
-	//accumulated_time_ += time;
-	//while (accumulated_time_ >= time_step) {
+
 	world_.Step(time_step, velocity_iterations, position_iterations);
-		//accumulated_time_ -= time_step;
-	//}
-	//return accumulated_time_;
+
 	player_.updateRenderData();
 	for (auto& platform : platforms_) {
 		platform.updateRenderData();
 	}
 }
 
-void World::init(float width, float height, int data_index, int platform_count)
+void World::init(float width, float height, int input_index, int data_index, int platform_count)
 {
 	world_.SetContactListener(&contact_listener_);
 
+	input_component_.init(input_index);
+
 	RenderData* data_ptr = reinterpret_cast<RenderData*>(data_index);
 	world_bounds_.init(world_, width, height);
-	player_.init(world_, data_ptr);
+	player_.init(world_, data_ptr, &input_component_);
 
 	for (int i = 0; i < platform_count; i++) {
 		platforms_.emplace_back();
