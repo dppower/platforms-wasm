@@ -4,7 +4,7 @@ import { Mesh } from "../geometry/mesh";
 import { PLAYER, PLATFORMS, SKY, RGB_COLORS } from "../geometry/mesh-providers";
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "../physics/constant-tokens";
 import { WorldState} from "../physics/world-state";
-import { BoxDimensions } from "../physics/box-dimensions";
+import { BoxDimensions, PlatformDimensions } from "../physics/box-dimensions";
 import { ShaderProgram } from "../shaders/shader-program";
 import { BASIC_SHADER } from "../shaders/shader-providers";
 import { WEBGL } from "../webgl/webgl-tokens";
@@ -22,7 +22,7 @@ export class SceneRenderer {
         @Inject(PLAYER) private player_: Mesh[],
         @Inject(RGB_COLORS) private rgb_colors: number[][],
         @Inject(PLAYER_DIMENSIONS) private player_dimensions_: BoxDimensions,
-        @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: BoxDimensions[],
+        @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: PlatformDimensions[],
         @Inject(WORLD_WIDTH) private world_width_: number,
         @Inject(WORLD_HEIGHT) private world_height_: number,
         private world_state_: WorldState,

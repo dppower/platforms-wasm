@@ -27,12 +27,12 @@ export interface PointerState {
     delta: Vec2;
 };
 
-const InitialPointerState: PointerState = {
-    left: false,
-    right: false,
-    wheel: 0,
-    position: new Vec2(),
-    delta: new Vec2()
+class InitialPointerState implements PointerState {
+    left = false;
+    right = false;
+    wheel = 0;
+    position = new Vec2();
+    delta = new Vec2();
 };
 
 @Injectable()
@@ -83,8 +83,8 @@ export class InputManager {
         // Initialise state
         this.previous_key_state_ = Object.assign({}, InitialKeyState);
         this.current_key_state_ = Object.assign({}, InitialKeyState);
-        this.previous_pointer_state_ = Object.assign({}, InitialPointerState);
-        this.current_pointer_state_ = Object.assign({}, InitialPointerState);
+        this.previous_pointer_state_ = new InitialPointerState();
+        this.current_pointer_state_ = new InitialPointerState();
         // set default key code bindings
         this.current_key_bindings_.set("KeyA", "left");
         this.current_key_bindings_.set("KeyD", "right");

@@ -1,7 +1,7 @@
 ﻿import { Injectable, Inject } from "@angular/core";
 
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "./constant-tokens";
-import { BoxDimensions } from "./box-dimensions";
+import { BoxDimensions, PlatformDimensions } from "./box-dimensions";
 import { InputManager } from "../canvas/input-manager";
 
 @Injectable()
@@ -24,7 +24,7 @@ export class WorldState {
     constructor(        
         @Inject(WORLD_WIDTH) private world_width_: number,
         @Inject(WORLD_HEIGHT) private world_height_: number,
-        @Inject(PLATFORM_DIMENSIONS) private platforms_: BoxDimensions[],
+        @Inject(PLATFORM_DIMENSIONS) private platforms_: PlatformDimensions[],
         @Inject(PLAYER_DIMENSIONS) private player_: BoxDimensions,
         private input_manager_: InputManager
     ) { };
@@ -49,7 +49,9 @@ export class WorldState {
         this.platforms_.forEach(platform => {
             initial_values.push(
                 platform.x, platform.y, platform.w, platform.h,
-                Math.cos(platform.r), Math.sin(platform.r)
+                Math.cos(platform.r), Math.sin(platform.r),
+                platform.start_x, platform.start_y,
+                platform.end_x, platform.end_y
             );
         });
 
@@ -63,9 +65,16 @@ export class WorldState {
     };
 
     getTransform(index: number): Float32Array {
-        let begin = this.data_offset_ + index * 6;
-        let end = begin + 6;
-        return Module.HEAPF32.subarray(begin, end);
+        if (index === 0) {
+            let begin = this.data_offset_;
+            let end = begin + 6;
+            return Module.HEAPF32.subarray(begin, end);
+        }
+        else {
+            let begin = this.data_offset_ + 6 + (index - 1) * 10;
+            let end = begin + 10;
+            return Module.HEAPF32.subarray(begin, end);
+        }
     };
 
     updateWorld(dt: number) {

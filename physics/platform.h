@@ -1,7 +1,9 @@
 #pragma once
 #include <Box2D/Dynamics/b2World.h>
 #include <Box2D/Dynamics/b2Body.h>
+#include<Box2D/Dynamics/Joints/b2Joint.h>
 #include <functional>
+#include <string>
 #include "render_data.h"
 #include "input_component.h"
 
@@ -22,5 +24,6 @@ private:
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> platform_body_;
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> start_point_;
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> end_point_;
+	std::unique_ptr<b2Joint, std::function<void(b2Joint*)>> prismatic_joint_;
 };
 

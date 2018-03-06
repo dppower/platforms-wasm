@@ -3,6 +3,7 @@
 #include <Box2D/Dynamics/b2Fixture.h>
 #include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
 #include <cmath>
+#include <emscripten/emscripten.h>
 
 Platform::Platform()
 {
@@ -30,13 +31,14 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	float y = render_data_->y;
 	float hw = render_data_->w / 2;
 	float hh = render_data_->h / 2;
-	float angle = std::atan2(render_data_->s, render_data_->c);
+	float platform_angle = std::atan2(render_data_->s, render_data_->c);
 
 	// Platform Body
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(x, y);
-	bodyDef.angle = angle;
+	bodyDef.angle = platform_angle;
+	bodyDef.gravityScale = 0;
 	platform_body_ = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
 		world.CreateBody(&bodyDef),
 		[&world](b2Body*  body) { world.DestroyBody(body); }
@@ -51,11 +53,18 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	fixtureDef.userData = nullptr;
 	platform_body_->CreateFixture(&fixtureDef);
 
+	// Path
+	b2Vec2 start(render_data_->start_x, render_data_->start_y);
+	b2Vec2 end(render_data_->end_x, render_data_->end_y);
+	b2Vec2 path = end - start;
+	path.Normalize();
+	float path_angle = std::atan2(path.y, path.x);
+
 	// Start Point Body
 	b2BodyDef startBodyDef;
 	startBodyDef.type = b2_staticBody;
-	startBodyDef.position.Set(render_data_->start_x, render_data_->start_y);
-	startBodyDef.angle = angle;
+	startBodyDef.position.Set(start.x, start.y);
+	startBodyDef.angle = path_angle;
 	start_point_ = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
 		world.CreateBody(&startBodyDef),
 		[&world](b2Body*  body) { world.DestroyBody(body); }
@@ -66,8 +75,8 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	// End Point
 	b2BodyDef endBodyDef;
 	endBodyDef.type = b2_staticBody;
-	endBodyDef.position.Set(render_data_->end_x, render_data_->end_y);
-	endBodyDef.angle = angle;
+	endBodyDef.position.Set(end.x, end.y);
+	endBodyDef.angle = path_angle;
 	end_point_ = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
 		world.CreateBody(&endBodyDef),
 		[&world](b2Body*  body) { world.DestroyBody(body); }
@@ -80,22 +89,27 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	jointDef.bodyA = start_point_.get();
 	jointDef.bodyB = platform_body_.get();
 	jointDef.localAxisA.Set(1, 0);
-	jointDef.localAnchorA.Set(render_data_->start_x, render_data_->start_y);
-	jointDef.localAnchorB.Set(x, y);
+	jointDef.localAnchorA.Set(0, 0);
+	jointDef.localAnchorB.Set(0, 0);
 	jointDef.enableLimit = true;
 	jointDef.lowerTranslation = 0;
-	jointDef.upperTranslation = b2Distance(startBodyDef.position, endBodyDef.position);
+	jointDef.upperTranslation = b2Distance(start, end);
+
+	prismatic_joint_= std::unique_ptr<b2Joint, std::function<void(b2Joint*)>>(
+		world.CreateJoint(&jointDef),
+		[&world](b2Joint*  joint) { world.DestroyJoint(joint); }
+	);
 }
 
 void Platform::update(float dt)
 {
 	if (input_component_->wasButtonDown("left")) {
-		bool test_point = platform_body_->GetFixtureList()->TestPoint(input_component_->previous_position);
+		bool test_point = platform_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
 
-		if (test_point) {
-			float magnitude = platform_body_->GetMass() * 5;
-			b2Vec2 impulse(magnitude * input_component_->dx, magnitude * input_component_->dy);
-			platform_body_->ApplyLinearImpulse(impulse, input_component_->previous_position, true);
+		if (test_point) {			
+			float magnitude = platform_body_->GetMass() * 2.2;
+			b2Vec2 impulse(magnitude * input_component_->dx(), magnitude * input_component_->dy());
+			platform_body_->ApplyLinearImpulse(impulse, input_component_->previous_position(), true);
 		}
 	}
 }

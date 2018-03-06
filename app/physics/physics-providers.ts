@@ -1,7 +1,7 @@
 ﻿import { StaticProvider } from "@angular/core";
 
 import { WorldState } from "./world-state";
-import { BoxDimensions } from "./box-dimensions";
+import { BoxDimensions, PlatformDimensions } from "./box-dimensions";
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "./constant-tokens";
 import { InputManager } from "../canvas/input-manager";
 
@@ -10,7 +10,9 @@ export const PHYSICS_PROVIDERS: StaticProvider[] = [
     { provide: WORLD_WIDTH, useValue: 20 },
     {
         provide: PLATFORM_DIMENSIONS,
-        useValue: (<BoxDimensions[]>[{ x: 10, y: 10, w: 2.5, h: 5, r: 0.6 }])
+        useValue: (<PlatformDimensions[]>[
+            { x: 10, y: 10, w: 2.5, h: 5, r: 0.6, start_x: 4, start_y: 4, end_x: 16, end_y: 16 }
+        ])
     },
     {
         provide: PLAYER_DIMENSIONS,
