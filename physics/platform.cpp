@@ -2,6 +2,7 @@
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
 #include <Box2D/Dynamics/b2Fixture.h>
 #include <Box2D/Dynamics/Joints/b2PrismaticJoint.h>
+#include <Box2D/Dynamics/Joints/b2RevoluteJoint.h>
 #include <cmath>
 #include <emscripten/emscripten.h>
 
@@ -37,7 +38,7 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(x, y);
-	bodyDef.angle = platform_angle;
+	//bodyDef.angle = platform_angle;
 	bodyDef.gravityScale = 0;
 	platform_body_ = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
 		world.CreateBody(&bodyDef),
@@ -59,6 +60,26 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	b2Vec2 path = end - start;
 	path.Normalize();
 	float path_angle = std::atan2(path.y, path.x);
+
+	// Pivot Body
+	b2BodyDef pivotBodyDef;
+	pivotBodyDef.type = b2_dynamicBody;
+	pivotBodyDef.position.Set(x, y);
+	pivotBodyDef.angle = path_angle;
+	pivotBodyDef.gravityScale = 0;
+	pivot_body_ = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
+		world.CreateBody(&pivotBodyDef),
+		[&world](b2Body*  body) { world.DestroyBody(body); }
+	);
+
+	// Pivot Fixture
+	b2FixtureDef pivotFixtureDef;
+	pivotFixtureDef.density = 2.6f;
+	b2PolygonShape pivot_rect;
+	pivot_rect.SetAsBox(1.0f, 0.75f);
+	pivotFixtureDef.shape = &pivot_rect;
+	pivotFixtureDef.userData = nullptr;
+	pivot_body_->CreateFixture(&pivotFixtureDef);
 
 	// Start Point Body
 	b2BodyDef startBodyDef;
@@ -83,20 +104,30 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	);
 
 	// End Point Fixture: None or else a sensor to detect point in rect, moveable? Not in play mode.
+	
+	// Revolute Joint
+	b2RevoluteJointDef rJointDef;
+	rJointDef.bodyA = pivot_body_.get();
+	rJointDef.bodyB = platform_body_.get();
+	
+	revolute_joint_ = std::unique_ptr<b2Joint, std::function<void(b2Joint*)>>(
+		world.CreateJoint(&rJointDef),
+		[&world](b2Joint*  joint) { world.DestroyJoint(joint); }
+	);
 
-	// Wheel Joint between start point and platform:
-	b2PrismaticJointDef jointDef;
-	jointDef.bodyA = start_point_.get();
-	jointDef.bodyB = platform_body_.get();
-	jointDef.localAxisA.Set(1, 0);
-	jointDef.localAnchorA.Set(0, 0);
-	jointDef.localAnchorB.Set(0, 0);
-	jointDef.enableLimit = true;
-	jointDef.lowerTranslation = 0;
-	jointDef.upperTranslation = b2Distance(start, end);
+	// Prismatic Joint between start point and platform:
+	b2PrismaticJointDef pJointDef;
+	pJointDef.bodyA = start_point_.get();
+	pJointDef.bodyB = pivot_body_.get();
+	pJointDef.localAxisA.Set(1, 0);
+	pJointDef.localAnchorA.Set(0, 0);
+	pJointDef.localAnchorB.Set(0, 0);
+	pJointDef.enableLimit = true;
+	pJointDef.lowerTranslation = 0;
+	pJointDef.upperTranslation = b2Distance(start, end);
 
 	prismatic_joint_= std::unique_ptr<b2Joint, std::function<void(b2Joint*)>>(
-		world.CreateJoint(&jointDef),
+		world.CreateJoint(&pJointDef),
 		[&world](b2Joint*  joint) { world.DestroyJoint(joint); }
 	);
 }
@@ -104,12 +135,21 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 void Platform::update(float dt)
 {
 	if (input_component_->wasButtonDown("left")) {
-		bool test_point = platform_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
+		bool test_point = pivot_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
 
 		if (test_point) {			
-			float magnitude = platform_body_->GetMass() * 2.2;
+			float magnitude = pivot_body_->GetMass() * 2.2;
 			b2Vec2 impulse(magnitude * input_component_->dx(), magnitude * input_component_->dy());
-			platform_body_->ApplyLinearImpulse(impulse, input_component_->previous_position(), true);
+			pivot_body_->ApplyLinearImpulse(impulse, input_component_->previous_position(), true);
+		}
+		else {
+			test_point = platform_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
+
+			if (test_point) {
+				float magnitude = platform_body_->GetMass() * 2.2;
+				b2Vec2 impulse(magnitude * input_component_->dx(), magnitude * input_component_->dy());
+				platform_body_->ApplyLinearImpulse(impulse, input_component_->previous_position(), true);
+			}
 		}
 	}
 }

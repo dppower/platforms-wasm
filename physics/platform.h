@@ -21,9 +21,13 @@ private:
 	PlatformData* render_data_;
 	InputComponent* input_component_;
 	int platform_index_;
+	// Bodies
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> platform_body_;
+	std::unique_ptr<b2Body, std::function<void(b2Body*)>> pivot_body_;
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> start_point_;
 	std::unique_ptr<b2Body, std::function<void(b2Body*)>> end_point_;
+	// Joints
 	std::unique_ptr<b2Joint, std::function<void(b2Joint*)>> prismatic_joint_;
+	std::unique_ptr<b2Joint, std::function<void(b2Joint*)>> revolute_joint_;
 };
 
