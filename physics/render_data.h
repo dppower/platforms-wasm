@@ -9,3 +9,11 @@ struct RenderData
 	float c;
 	float s;
 };
+
+struct PlatformData : RenderData
+{
+	float start_x;
+	float start_y;
+	float end_x;
+	float end_y;
+};

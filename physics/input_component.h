@@ -44,8 +44,12 @@ public:
 		return current_inputs_->position_y;
 	}
 
-	b2Vec2 position() {
+	b2Vec2 current_position() {
 		return b2Vec2(current_inputs_->position_x, current_inputs_->position_y);
+	}
+
+	b2Vec2 previous_position() {
+		return b2Vec2(previous_inputs_->position_x, previous_inputs_->position_y);
 	}
 
 	bool isKeyDown(InputActions action) {

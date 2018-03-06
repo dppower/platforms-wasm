@@ -21,7 +21,11 @@ void World::tick(float time_step)
 {
 	player_.update(time_step);
 
-	world_.Step(time_step, velocity_iterations, position_iterations);
+	for (auto& platform : platforms_) {
+		platform.update(time_step);
+	}
+
+ 	world_.Step(time_step, velocity_iterations, position_iterations);
 
 	player_.updateRenderData();
 	for (auto& platform : platforms_) {
@@ -36,12 +40,14 @@ void World::init(float width, float height, int input_index, int data_index, int
 	input_component_.init(input_index);
 
 	RenderData* data_ptr = reinterpret_cast<RenderData*>(data_index);
+	PlatformData* platform_ptr = reinterpret_cast<PlatformData*>(data_ptr + 1);
+
 	world_bounds_.init(world_, width, height);
 	player_.init(world_, data_ptr, &input_component_);
 
 	for (int i = 0; i < platform_count; i++) {
 		platforms_.emplace_back();
-		platforms_[i].init(world_, data_ptr, i + 1);
+		platforms_[i].init(world_, platform_ptr, i, &input_component_);
 	}
 }
 
