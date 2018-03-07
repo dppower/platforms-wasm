@@ -7,17 +7,18 @@ import { MeshData } from "./mesh-data";
 import { Primitive } from "./primitive";
 import { square_mesh_data } from "./square-mesh";
 import { circle_mesh_data } from "./circle-mesh";
+import { arrow_mesh_data } from "./arrow-mesh";
 
 // Mesh Data
 const SQUARE_MESH = new InjectionToken<MeshData>("square mesh data");
 const CIRCLE_MESH = new InjectionToken<MeshData>("cirle mesh data");
+const ARROW_MESH = new InjectionToken<MeshData>("arrow mesh data");
 
 // Primitives
 export const SQUARE_PRIMITIVE = new InjectionToken<Primitive[]>("square primitive");
 export const CIRCLE_PRIMITIVE = new InjectionToken<Primitive[]>("circle primitive");
+export const ARROW_PRIMITIVE = new InjectionToken<Primitive[]>("arrow primitive");
 
-// Platforms
-//export const PLATFORMS = new InjectionToken<Mesh[]>("platform mesh");
 // Sky
 export const SKY = new InjectionToken<Mesh>("sky mesh");
 
@@ -59,13 +60,19 @@ export const MESH_PROVIDERS: StaticProvider[] = [
         deps: [WEBGL, SQUARE_MESH],
         multi: true
     },
-    //{ provide: PLATFORMS, useClass: Mesh, deps: [WEBGL, SQUARE_PRIMITIVE, Camera2d], multi: true },
     { provide: SKY, useClass: Mesh, deps: [WEBGL, SQUARE_PRIMITIVE, Camera2d] },
     { provide: CIRCLE_MESH, useValue: circle_mesh_data },
     {
         provide: CIRCLE_PRIMITIVE,
         useClass: Primitive,
         deps: [WEBGL, CIRCLE_MESH],
+        multi: true
+    },
+    { provide: ARROW_MESH, useValue: arrow_mesh_data },
+    {
+        provide: ARROW_PRIMITIVE,
+        useClass: Primitive,
+        deps: [WEBGL, ARROW_MESH],
         multi: true
     }
 ];

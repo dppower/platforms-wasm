@@ -7,11 +7,7 @@ import { Camera2d } from "../canvas/camera-2d";
 
 @Injectable()
 export class Mesh {
-
-    get color_id() {
-        return this.color_id_;
-    };
-
+    
     get x() {
         return this.transform_matrix_[12];
     };
@@ -28,7 +24,6 @@ export class Mesh {
         this.transform_matrix_[13] = value;
     };
     
-    private color_id_: number;
     private uniform_colour_ = new Float32Array([1.0, 1.0, 1.0, 1.0]);
 
     private transform_matrix_: Float32Array;
@@ -51,8 +46,8 @@ export class Mesh {
         let c = Math.cos(angle);
         let s = Math.sin(angle);
         this.transform_matrix_.set([
-            sx * c, sx * -s, 0, 0,
-            sy * s + 0, sy * c, 0, 0,
+            sx * c, sx * s, 0, 0,
+            sy * -s + 0, sy * c, 0, 0,
             0, 0, 1, 0,
             tx, ty, tz, 1
         ]);
@@ -66,15 +61,14 @@ export class Mesh {
             let c = data[4];
             let s = data[5];
             this.transform_matrix_[0] = this.scale_x_ * c;
-            this.transform_matrix_[1] = this.scale_x_ * -s;
-            this.transform_matrix_[4] = this.scale_y_ * s;
+            this.transform_matrix_[1] = this.scale_x_ * s;
+            this.transform_matrix_[4] = this.scale_y_ * -s;
             this.transform_matrix_[5] = this.scale_y_ * c;
         }
         this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
     };
     
-    setUniformColor(array: number[], id: number) {
-        this.color_id_ = id;
+    setUniformColor(array: number[]) {
         this.uniform_colour_.set(array);
     };
 

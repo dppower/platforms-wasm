@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@angular/core";
 
 import { Mesh } from "../geometry/mesh";
-import { /*PLATFORMS,*/ SKY, RGB_COLORS, SQUARE_PRIMITIVE } from "../geometry/mesh-providers";
+import { SKY, RGB_COLORS, SQUARE_PRIMITIVE, ARROW_PRIMITIVE } from "../geometry/mesh-providers";
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "../physics/constant-tokens";
 import { WorldState} from "../physics/world-state";
 import { BoxDimensions, PlatformDimensions } from "../physics/box-dimensions";
@@ -25,7 +25,7 @@ export class SceneRenderer {
         @Inject(BASIC_SHADER) private shader_: ShaderProgram,
         @Inject(SKY) private sky_: Mesh,
         @Inject(SQUARE_PRIMITIVE) private square_primitive_: Primitive[],
-        //@Inject(PLATFORMS) private platforms_: Mesh[],        
+        @Inject(ARROW_PRIMITIVE) private arrow_primitive_: Primitive[],      
         @Inject(RGB_COLORS) private rgb_colors: number[][],
         @Inject(PLAYER_DIMENSIONS) private player_dimensions_: BoxDimensions,
         @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: PlatformDimensions[],
@@ -40,7 +40,7 @@ export class SceneRenderer {
         this.shader_.initProgram();
 
         // Sky
-        this.sky_.setUniformColor([0.729, 0.831, 0.937, 1.0], 3);
+        this.sky_.setUniformColor([0.729, 0.831, 0.937, 1.0]/*, 3*/);
         let hw = this.world_width_ / 2;
         let hh = this.world_height_ / 2;
         this.sky_.initTransform(hw, hh, 10, hw, hh, 0);
@@ -63,13 +63,9 @@ export class SceneRenderer {
             return new Platform(dims, index, this.rgb_colors[index], this.world_state_);
         });
         
-        this.platforms_.forEach(platform => platform.init(this.gl, this.square_primitive_, this.main_camera_));
-        //this.platforms_.forEach((platform, index) => {
-        //    platform.setUniformColor(this.rgb_colors[index], index);
-
-        //    let dims = this.platform_dimensions_[index];
-        //    platform.initTransform(dims.x, dims.y, 1, dims.hw, dims.hh, dims.r);
-        //});
+        this.platforms_.forEach(platform => {
+            platform.init(this.gl, this.square_primitive_, this.arrow_primitive_, this.main_camera_)
+        });
     };
 
     updateScene(dt: number) {
@@ -77,9 +73,6 @@ export class SceneRenderer {
         if (this.world_state_.initialised) {
             this.player_.updateTransform(this.world_state_.getTransform(0));
             
-            //this.platforms_.forEach((platform, index) => {
-            //    platform.updateTransform(this.world_state_.getTransform(index + 1), true);
-            //});
             this.platforms_.forEach(platform => platform.update());
         }
         this.main_camera_.updateViewDimensions();

@@ -46,6 +46,9 @@
     <TypeScriptCompile Include="canvas\main-canvas.component.ts" />
     <TypeScriptCompile Include="canvas\render-loop.ts" />
     <TypeScriptCompile Include="canvas\touch-utility.ts" />
+    <TypeScriptCompile Include="geometry\arrow-mesh.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="geometry\capsule-mesh.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
