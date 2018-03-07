@@ -13,11 +13,11 @@ const SQUARE_MESH = new InjectionToken<MeshData>("square mesh data");
 const CIRCLE_MESH = new InjectionToken<MeshData>("cirle mesh data");
 
 // Primitives
-const SQUARE_PRIMITIVE = new InjectionToken<Primitive[]>("square primitive");
-const CIRCLE_PRIMITIVE = new InjectionToken<Primitive[]>("circle primitive");
+export const SQUARE_PRIMITIVE = new InjectionToken<Primitive[]>("square primitive");
+export const CIRCLE_PRIMITIVE = new InjectionToken<Primitive[]>("circle primitive");
 
 // Platforms
-export const PLATFORMS = new InjectionToken<Mesh[]>("platform mesh");
+//export const PLATFORMS = new InjectionToken<Mesh[]>("platform mesh");
 // Sky
 export const SKY = new InjectionToken<Mesh>("sky mesh");
 
@@ -59,7 +59,7 @@ export const MESH_PROVIDERS: StaticProvider[] = [
         deps: [WEBGL, SQUARE_MESH],
         multi: true
     },
-    { provide: PLATFORMS, useClass: Mesh, deps: [WEBGL, SQUARE_PRIMITIVE, Camera2d], multi: true },
+    //{ provide: PLATFORMS, useClass: Mesh, deps: [WEBGL, SQUARE_PRIMITIVE, Camera2d], multi: true },
     { provide: SKY, useClass: Mesh, deps: [WEBGL, SQUARE_PRIMITIVE, Camera2d] },
     { provide: CIRCLE_MESH, useValue: circle_mesh_data },
     {

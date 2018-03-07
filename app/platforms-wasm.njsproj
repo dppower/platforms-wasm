@@ -52,6 +52,9 @@
     <TypeScriptCompile Include="geometry\circle-mesh.ts" />
     <TypeScriptCompile Include="geometry\mesh-providers.ts" />
     <TypeScriptCompile Include="geometry\mesh-data.ts" />
+    <TypeScriptCompile Include="geometry\platform.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="geometry\primitive.ts" />
     <TypeScriptCompile Include="geometry\mesh.ts" />
     <TypeScriptCompile Include="geometry\square-mesh.ts" />
