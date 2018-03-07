@@ -8,7 +8,7 @@ app.use("/scripts", express.static(path.join(__dirname, "node_modules")));
 app.use("/app", express.static(path.join(__dirname, "build", "app")));
 app.use("/css", express.static(path.join(__dirname, "docs", "css")));
 app.use("/js", express.static(path.join(__dirname, "docs", "js")));
-app.use("/wasm", express.static(path.join(__dirname, "docs")));
+app.use("/physics.js", express.static(path.join(__dirname, "docs", "physics.js")));
 
 app.set("port", process.env.PORT || 3000);
 

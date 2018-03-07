@@ -35,7 +35,7 @@ export class MainCanvas implements AfterViewInit {
         });
 
         let script = document.createElement("script");
-        script.src = "wasm/physics.js";
+        script.src = "physics.js";
         document.body.appendChild(script);
     };
 }
