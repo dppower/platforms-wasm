@@ -1,6 +1,8 @@
 ﻿import { MeshData } from "./mesh-data";
 
-export function createCircleVertices(x: number, y: number, radius: number, vertex_count: number) {
+export function createCircleVertices(
+    x: number, y: number, radius: number, vertex_count: number
+): MeshData {
     let vertices: number[] = [x, y, 0];
     for (let i = 0; i < vertex_count; i++) {
         let percent = i / (vertex_count - 1);
@@ -10,10 +12,16 @@ export function createCircleVertices(x: number, y: number, radius: number, verte
         vertices.push(y + radius * Math.sin(angle));
         vertices.push(0);
     }
-    return vertices;
+    return {
+        vertex_count: vertex_count + 1,
+        vertex_positions: vertices,
+        drawing_mode: 6
+    };
 }
 
-export function createSemiCircleVertices(x: number, y: number, radius: number, vertex_count: number) {
+export function createSemiCircleVertices(
+    x: number, y: number, radius: number, vertex_count: number
+): MeshData {
     let vertices: number[] = [x, y, 0];
     for (let i = 0; i < vertex_count; i++) {
         let percent = i / vertex_count;
@@ -23,10 +31,11 @@ export function createSemiCircleVertices(x: number, y: number, radius: number, v
         vertices.push(y + radius * Math.sin(angle));
         vertices.push(0);
     }
-    return vertices;
+    return {
+        vertex_count: vertex_count + 1,
+        vertex_positions: vertices,
+        drawing_mode: 6
+    };
 }
 
-export const circle_mesh_data = (vertex_count: number): MeshData => ({
-    vertex_count,
-    vertex_positions: createCircleVertices(0, 0, 1, vertex_count)
-});
+export const circle_mesh_data = createCircleVertices(0, 0, 1, 60);

@@ -14,9 +14,13 @@ export class Primitive {
     private index_count_: number;
     private index_type_: number; // UNSIGNED_BYTE
 
+    private drawing_mode_: number;
+
     constructor(@Inject(WEBGL) private webgl_context_: WebGLRenderingContext,
-        mesh_data: MeshData, private drawing_mode_ = 4
+        mesh_data: MeshData, 
     ) { 
+        this.drawing_mode_ = mesh_data.drawing_mode || 4;
+
         this.vertex_count_ = mesh_data.vertex_count;
 
         this.bufferData(0, mesh_data.vertex_positions);

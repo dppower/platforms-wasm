@@ -60,10 +60,10 @@ export const MESH_PROVIDERS: StaticProvider[] = [
     },
     { provide: PLATFORMS, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d], multi: true },
     { provide: SKY, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d] },
-    { provide: CIRCLE_MESH, useValue: circle_mesh_data(60) },
+    { provide: CIRCLE_MESH, useValue: circle_mesh_data },
     {
         provide: CIRCLE_BUFFER,
-        useFactory: (context: WebGLRenderingContext, mesh: MeshData) => new Primitive(context, mesh, 6),
+        useClass: Primitive,
         deps: [WEBGL, CIRCLE_MESH],
         multi: true
     },
