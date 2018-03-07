@@ -30,8 +30,8 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 
 	float x = render_data_->x;
 	float y = render_data_->y;
-	float hw = render_data_->w / 2;
-	float hh = render_data_->h / 2;
+	float hw = render_data_->hw;
+	float hh = render_data_->hh;
 	float platform_angle = std::atan2(render_data_->s, render_data_->c);
 
 	// Platform Body

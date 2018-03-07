@@ -4,8 +4,8 @@ struct RenderData
 {
 	float x;
 	float y;
-	float w;
-	float h;
+	float hw;
+	float hh;
 	float c;
 	float s;
 };

@@ -34,6 +34,9 @@ export class Mesh {
     private transform_matrix_: Float32Array;
     private view_matrix_: Float32Array;
 
+    private scale_x_: number;
+    private scale_y_: number;
+
     constructor(
         @Inject(WEBGL) private webgl_context_: WebGLRenderingContext,
         private primitives_: Primitive[], private camera_: Camera2d
@@ -43,6 +46,8 @@ export class Mesh {
     };
 
     initTransform(tx: number, ty: number, tz: number, sx = 1, sy = 1, angle = 0) {
+        this.scale_x_ = sx;
+        this.scale_y_ = sy;
         let c = Math.cos(angle);
         let s = Math.sin(angle);
         this.transform_matrix_.set([
@@ -54,17 +59,17 @@ export class Mesh {
         this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
     };
 
-    updateTransform(data: Float32Array, use_scale = false) {
+    updateTransform(data: Float32Array, can_rotate = false) {
         this.x = data[0];
         this.y = data[1];
-        let sx = use_scale ? data[2] / 2 : 1;
-        let sy = use_scale ? data[3] / 2 : 1;
-        let c = data[4];
-        let s = data[5];
-        this.transform_matrix_[0] = sx * c;
-        this.transform_matrix_[1] = sx * -s;
-        this.transform_matrix_[4] = sy * s;
-        this.transform_matrix_[5] = sy * c;
+        if (can_rotate) {
+            let c = data[4];
+            let s = data[5];
+            this.transform_matrix_[0] = this.scale_x_ * c;
+            this.transform_matrix_[1] = this.scale_x_ * -s;
+            this.transform_matrix_[4] = this.scale_y_ * s;
+            this.transform_matrix_[5] = this.scale_y_ * c;
+        }
         this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
     };
     

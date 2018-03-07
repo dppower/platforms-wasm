@@ -44,7 +44,7 @@ export class SceneRenderer {
         
         // Player 
         let player_primitives = createCapsuleVertices(
-            this.player_dimensions_.w / 2, this.player_dimensions_.h / 2, 60
+            this.player_dimensions_.hw, this.player_dimensions_.hh, 60
 
         ).map(mesh_data => new Primitive(this.gl, mesh_data));
 
@@ -60,9 +60,7 @@ export class SceneRenderer {
             platform.setUniformColor(this.rgb_colors[index], index);
 
             let dims = this.platform_dimensions_[index];
-            let hw = dims.w / 2;
-            let hh = dims.h / 2;
-            platform.initTransform(dims.x, dims.y, 1, hw, hh, dims.r);
+            platform.initTransform(dims.x, dims.y, 1, dims.hw, dims.hh, dims.r);
         });
     };
 

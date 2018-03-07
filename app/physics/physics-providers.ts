@@ -11,12 +11,12 @@ export const PHYSICS_PROVIDERS: StaticProvider[] = [
     {
         provide: PLATFORM_DIMENSIONS,
         useValue: (<PlatformDimensions[]>[
-            { x: 10, y: 10, w: 2.5, h: 5, r: 0.6, start_x: 4, start_y: 4, end_x: 16, end_y: 16 }
+            { x: 10, y: 10, hw: 1.2, hh: 2.0, r: 0.6, start_x: 4, start_y: 4, end_x: 16, end_y: 16 }
         ])
     },
     {
         provide: PLAYER_DIMENSIONS,
-        useValue: (<BoxDimensions>{ x: 2, y: 0.9, w: 0.8, h: 1, r: 0 })
+        useValue: (<BoxDimensions>{ x: 2, y: 0.9, hw: 0.4, hh: 0.5, r: 0 })
     },
     {
         provide: WorldState,

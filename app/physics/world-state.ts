@@ -42,13 +42,13 @@ export class WorldState {
         this.platform_count_ = this.platforms_.length;
         let initial_values: number[] = [];
         initial_values.push(
-            this.player_.x, this.player_.y, this.player_.w, this.player_.h,
+            this.player_.x, this.player_.y, this.player_.hw, this.player_.hh,
             Math.cos(this.player_.r), Math.sin(this.player_.r)
         );
 
         this.platforms_.forEach(platform => {
             initial_values.push(
-                platform.x, platform.y, platform.w, platform.h,
+                platform.x, platform.y, platform.hw, platform.hh,
                 Math.cos(platform.r), Math.sin(platform.r),
                 platform.start_x, platform.start_y,
                 platform.end_x, platform.end_y

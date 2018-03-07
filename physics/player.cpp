@@ -141,8 +141,8 @@ void Player::init(b2World& world, RenderData* data_ptr, InputComponent* input_co
 
 	float x = render_data_->x;
 	float y = render_data_->y;
-	float hw = render_data_->w / 2;
-	float hh = render_data_->h / 2;
+	float hw = render_data_->hw;
+	float hh = render_data_->hh;
 
 	// Body
 	b2BodyDef bodyDef;
@@ -173,7 +173,7 @@ void Player::init(b2World& world, RenderData* data_ptr, InputComponent* input_co
 	body_->CreateFixture(&fixtureDef);
 
 	b2PolygonShape body_rect;
-	body_rect.SetAsBox(hw - 0.005f, hh);
+	body_rect.SetAsBox(hw - 0.05f, hh);
 	fixtureDef.shape = &body_rect;
 	fixtureDef.userData = nullptr;
 	body_->CreateFixture(&fixtureDef);
