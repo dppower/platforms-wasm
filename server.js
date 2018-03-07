@@ -8,7 +8,7 @@ app.use("/scripts", express.static(path.join(__dirname, "node_modules")));
 app.use("/app", express.static(path.join(__dirname, "build", "app")));
 app.use("/css", express.static(path.join(__dirname, "docs", "css")));
 app.use("/js", express.static(path.join(__dirname, "docs", "js")));
-app.use("/wasm", express.static(path.join(__dirname, "docs", "wasm")));
+app.use("/wasm", express.static(path.join(__dirname, "docs")));
 
 app.set("port", process.env.PORT || 3000);
 
@@ -18,7 +18,7 @@ app.get("*.wasm", (req, res) => {
             "Content-Type": "application/wasm"
         }
     };
-    let file_path = path.join(__dirname, "docs", "wasm", req.path);
+    let file_path = path.join(__dirname, "docs", req.path);
     res.sendFile(
         file_path,
         options,
