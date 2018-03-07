@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@angular/core";
 
 import { Mesh } from "../geometry/mesh";
-import { PLAYER, PLATFORMS, SKY, RGB_COLORS } from "../geometry/mesh-providers";
+import { PLATFORMS, SKY, RGB_COLORS } from "../geometry/mesh-providers";
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "../physics/constant-tokens";
 import { WorldState} from "../physics/world-state";
 import { BoxDimensions, PlatformDimensions } from "../physics/box-dimensions";
@@ -10,16 +10,19 @@ import { BASIC_SHADER } from "../shaders/shader-providers";
 import { WEBGL } from "../webgl/webgl-tokens";
 import { Camera2d } from "../canvas/camera-2d";
 import { RenderLoop } from "../canvas/render-loop";
+import { createCapsuleVertices } from "../geometry/capsule-mesh";
+import { Primitive } from "../geometry/primitive";
 
 @Injectable()
 export class SceneRenderer {
-    
+
+    private player_: Mesh;
+
     constructor(
         @Inject(WEBGL) private gl: WebGLRenderingContext,
         @Inject(BASIC_SHADER) private shader_: ShaderProgram,
         @Inject(SKY) private sky_: Mesh,
-        @Inject(PLATFORMS) private platforms_: Mesh[],
-        @Inject(PLAYER) private player_: Mesh[],
+        @Inject(PLATFORMS) private platforms_: Mesh[],        
         @Inject(RGB_COLORS) private rgb_colors: number[][],
         @Inject(PLAYER_DIMENSIONS) private player_dimensions_: BoxDimensions,
         @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: PlatformDimensions[],
@@ -38,25 +41,21 @@ export class SceneRenderer {
         let hw = this.world_width_ / 2;
         let hh = this.world_height_ / 2;
         this.sky_.initTransform(hw, hh, 10, hw, hh, 0);
+        
+        // Player 
+        let player_primitives = createCapsuleVertices(
+            this.player_dimensions_.w / 2, this.player_dimensions_.h / 2, 60
 
-        // Player rect
-        this.player_[0].initTransform(
+        ).map(mesh_data => new Primitive(this.gl, mesh_data));
+
+        this.player_ = new Mesh(this.gl, player_primitives, this.main_camera_);
+
+        this.player_.initTransform(
             this.player_dimensions_.x, this.player_dimensions_.y, 1,
-            this.player_dimensions_.w / 2, this.player_dimensions_.h / 2, 0
+            1, 1, 0
         );
 
-        // Player lower circle
-        this.player_[1].initTransform(
-            this.player_dimensions_.x, this.player_dimensions_.y - (this.player_dimensions_.h / 2), 1,
-            this.player_dimensions_.w / 2, this.player_dimensions_.w / 2, 0
-        );
-
-        // Player upper circle
-        this.player_[2].initTransform(
-            this.player_dimensions_.x, this.player_dimensions_.y + (this.player_dimensions_.h / 2), 1,
-            this.player_dimensions_.w / 2, this.player_dimensions_.w / 2, 0
-        );
-
+        // Platforms
         this.platforms_.forEach((platform, index) => {
             platform.setUniformColor(this.rgb_colors[index], index);
 
@@ -70,17 +69,10 @@ export class SceneRenderer {
     updateScene(dt: number) {
         this.world_state_.updateWorld(dt);
         if (this.world_state_.initialised) {
-
-            this.player_[0].updateTransform(this.world_state_.getTransform(0));
-
-            // Player lower circle
-            this.player_[1].updateTransform(this.world_state_.getTransform(0), 1, 0, -this.player_dimensions_.h / 2, true);
-
-            // Player upper circle
-            this.player_[2].updateTransform(this.world_state_.getTransform(0), 1, 0, +this.player_dimensions_.h / 2, true);
-
+            this.player_.updateTransform(this.world_state_.getTransform(0));
+            
             this.platforms_.forEach((platform, index) => {
-                platform.updateTransform(this.world_state_.getTransform(index + 1));
+                platform.updateTransform(this.world_state_.getTransform(index + 1), true);
             })
         }
         this.main_camera_.updateViewDimensions();
@@ -95,7 +87,7 @@ export class SceneRenderer {
 
         this.sky_.drawMesh(this.shader_);
 
-        this.player_.forEach(mesh => mesh.drawMesh(this.shader_));
+        this.player_.drawMesh(this.shader_);
         this.platforms_.forEach(platform => platform.drawMesh(this.shader_));
     };
 }

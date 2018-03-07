@@ -54,19 +54,17 @@ export class Mesh {
         this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
     };
 
-    updateTransform(data: Float32Array, tz: number = 1, offset_x = 0, offset_y = 0, use_width = false) {
-        let x = data[0] + offset_x;
-        let y = data[1] + offset_y;
-        let hw = data[2] / 2;
-        let hh = use_width ? hw : data[3] / 2;
+    updateTransform(data: Float32Array, use_scale = false) {
+        this.x = data[0];
+        this.y = data[1];
+        let sx = use_scale ? data[2] / 2 : 1;
+        let sy = use_scale ? data[3] / 2 : 1;
         let c = data[4];
         let s = data[5];
-        this.transform_matrix_.set([
-            hw * c, hw * -s, 0, 0,
-            hh * s, hh * c, 0, 0,
-            0, 0, 1, 0,
-            x, y, tz, 1
-        ]);
+        this.transform_matrix_[0] = sx * c;
+        this.transform_matrix_[1] = sx * -s;
+        this.transform_matrix_[4] = sy * s;
+        this.transform_matrix_[5] = sy * c;
         this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
     };
     
@@ -75,9 +73,7 @@ export class Mesh {
         this.uniform_colour_.set(array);
     };
 
-    drawMesh(shader_program: ShaderProgram) {
-
-        //this.camera_.applyViewTransform(this.transform_matrix_, this.view_matrix_);
+    drawMesh(shader_program: ShaderProgram) {       
         this.webgl_context_.uniformMatrix4fv(
             shader_program.getUniform("u_view_matrix"), false, this.view_matrix_
         );

@@ -8,17 +8,18 @@ import { Primitive } from "./primitive";
 import { square_mesh_data } from "./square-mesh";
 import { circle_mesh_data } from "./circle-mesh";
 
-const SQUARE_BUFFER = new InjectionToken<Primitive[]>("square primitive");
+// Mesh Data
 const SQUARE_MESH = new InjectionToken<MeshData>("square mesh data");
-const CIRCLE_BUFFER = new InjectionToken<Primitive[]>("circle primitive");
 const CIRCLE_MESH = new InjectionToken<MeshData>("cirle mesh data");
+
+// Primitives
+const SQUARE_PRIMITIVE = new InjectionToken<Primitive[]>("square primitive");
+const CIRCLE_PRIMITIVE = new InjectionToken<Primitive[]>("circle primitive");
 
 // Platforms
 export const PLATFORMS = new InjectionToken<Mesh[]>("platform mesh");
 // Sky
 export const SKY = new InjectionToken<Mesh>("sky mesh");
-// Player
-export const PLAYER = new InjectionToken<Mesh>("player mesh");
 
 // Colors
 export const HEX_COLORS = new InjectionToken<string[]>("hex colors");
@@ -53,21 +54,18 @@ export const MESH_PROVIDERS: StaticProvider[] = [
     },
     { provide: SQUARE_MESH, useValue: square_mesh_data },
     {
-        provide: SQUARE_BUFFER,
+        provide: SQUARE_PRIMITIVE,
         useClass: Primitive,
         deps: [WEBGL, SQUARE_MESH],
         multi: true
     },
-    { provide: PLATFORMS, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d], multi: true },
-    { provide: SKY, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d] },
+    { provide: PLATFORMS, useClass: Mesh, deps: [WEBGL, SQUARE_PRIMITIVE, Camera2d], multi: true },
+    { provide: SKY, useClass: Mesh, deps: [WEBGL, SQUARE_PRIMITIVE, Camera2d] },
     { provide: CIRCLE_MESH, useValue: circle_mesh_data },
     {
-        provide: CIRCLE_BUFFER,
+        provide: CIRCLE_PRIMITIVE,
         useClass: Primitive,
         deps: [WEBGL, CIRCLE_MESH],
         multi: true
-    },
-    { provide: PLAYER, useClass: Mesh, deps: [WEBGL, SQUARE_BUFFER, Camera2d], multi: true },
-    { provide: PLAYER, useClass: Mesh, deps: [WEBGL, CIRCLE_BUFFER, Camera2d], multi: true },
-    { provide: PLAYER, useClass: Mesh, deps: [WEBGL, CIRCLE_BUFFER, Camera2d], multi: true }
+    }
 ];
