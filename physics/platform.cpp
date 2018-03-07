@@ -38,7 +38,8 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(x, y);
-	//bodyDef.angle = platform_angle;
+	bodyDef.angle = platform_angle;
+	bodyDef.angularDamping = 1.2f;
 	bodyDef.gravityScale = 0;
 	platform_body_ = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
 		world.CreateBody(&bodyDef),
@@ -66,6 +67,7 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	pivotBodyDef.type = b2_dynamicBody;
 	pivotBodyDef.position.Set(x, y);
 	pivotBodyDef.angle = path_angle;
+	pivotBodyDef.linearDamping = 0.1f;
 	pivotBodyDef.gravityScale = 0;
 	pivot_body_ = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
 		world.CreateBody(&pivotBodyDef),
@@ -138,7 +140,7 @@ void Platform::update(float dt)
 		bool test_point = pivot_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
 
 		if (test_point) {			
-			float magnitude = pivot_body_->GetMass() * 2.2;
+			float magnitude = pivot_body_->GetMass() * 4.5;
 			b2Vec2 impulse(magnitude * input_component_->dx(), magnitude * input_component_->dy());
 			pivot_body_->ApplyLinearImpulse(impulse, input_component_->previous_position(), true);
 		}
@@ -146,7 +148,7 @@ void Platform::update(float dt)
 			test_point = platform_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
 
 			if (test_point) {
-				float magnitude = platform_body_->GetMass() * 2.2;
+				float magnitude = platform_body_->GetMass() * 1.2;
 				b2Vec2 impulse(magnitude * input_component_->dx(), magnitude * input_component_->dy());
 				platform_body_->ApplyLinearImpulse(impulse, input_component_->previous_position(), true);
 			}
