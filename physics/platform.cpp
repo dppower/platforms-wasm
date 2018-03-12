@@ -39,7 +39,8 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.position.Set(x, y);
 	bodyDef.angle = platform_angle;
-	bodyDef.angularDamping = 1.2f;
+	bodyDef.angularDamping = 2.5f;
+	bodyDef.linearDamping = 1.6f;
 	bodyDef.gravityScale = 0;
 	platform_body_ = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
 		world.CreateBody(&bodyDef),
@@ -67,7 +68,7 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	pivotBodyDef.type = b2_dynamicBody;
 	pivotBodyDef.position.Set(x, y);
 	pivotBodyDef.angle = path_angle;
-	pivotBodyDef.linearDamping = 0.1f;
+	pivotBodyDef.linearDamping = 1.6f;
 	pivotBodyDef.gravityScale = 0;
 	pivot_body_ = std::unique_ptr<b2Body, std::function<void(b2Body*)>>(
 		world.CreateBody(&pivotBodyDef),
@@ -111,7 +112,9 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	b2RevoluteJointDef rJointDef;
 	rJointDef.bodyA = pivot_body_.get();
 	rJointDef.bodyB = platform_body_.get();
-	
+	//rJointDef.motorSpeed = 0.0f;
+	//rJointDef.enableMotor = true;
+
 	revolute_joint_ = std::unique_ptr<b2Joint, std::function<void(b2Joint*)>>(
 		world.CreateJoint(&rJointDef),
 		[&world](b2Joint*  joint) { world.DestroyJoint(joint); }
@@ -127,6 +130,9 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	pJointDef.enableLimit = true;
 	pJointDef.lowerTranslation = 0;
 	pJointDef.upperTranslation = b2Distance(start, end);
+	//pJointDef.maxMotorForce = 5.0f;
+	//pJointDef.motorSpeed = 0.0f;
+	//pJointDef.enableMotor = true;
 
 	prismatic_joint_= std::unique_ptr<b2Joint, std::function<void(b2Joint*)>>(
 		world.CreateJoint(&pJointDef),
@@ -140,7 +146,7 @@ void Platform::update(float dt)
 		bool test_point = pivot_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
 
 		if (test_point) {			
-			float magnitude = pivot_body_->GetMass() * 4.5;
+			float magnitude = pivot_body_->GetMass() * 6.5;
 			b2Vec2 impulse(magnitude * input_component_->dx(), magnitude * input_component_->dy());
 			pivot_body_->ApplyLinearImpulse(impulse, input_component_->previous_position(), true);
 		}
@@ -148,9 +154,11 @@ void Platform::update(float dt)
 			test_point = platform_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
 
 			if (test_point) {
-				float magnitude = platform_body_->GetMass() * 1.2;
-				b2Vec2 impulse(magnitude * input_component_->dx(), magnitude * input_component_->dy());
-				platform_body_->ApplyLinearImpulse(impulse, input_component_->previous_position(), true);
+				float magnitude = platform_body_->GetInertia() * 0.9;
+				b2Vec2 force(magnitude * input_component_->dx(), magnitude * input_component_->dy());
+				b2Vec2 arm = input_component_->previous_position() - platform_body_->GetWorldCenter();
+				float32 impulse = b2Cross(arm, force);
+				platform_body_->ApplyAngularImpulse(impulse, true);
 			}
 		}
 	}
