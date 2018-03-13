@@ -21,10 +21,13 @@ export class Platform {
         arrow_primitive: Primitive[], camera: Camera2d
     ) {
         let dims = this.dimensions_;
+        let x = (1 - dims.p) * dims.start_x + dims.p * dims.end_x;
+        let y = (1 - dims.p) * dims.start_y + dims.p * dims.end_y;
+
         // Platform
         this.platform_mesh_ = new Mesh(context, square_primitive, camera);
         this.platform_mesh_.setUniformColor(this.color_);
-        this.platform_mesh_.initTransform(dims.x, dims.y, 3, dims.hw, dims.hh, dims.r);
+        this.platform_mesh_.initTransform(x, y, 3, dims.hw, dims.hh, dims.r);
 
         // Path Angle
         let path = Vec2.normalise(Vec2.subtract({ x: dims.end_x, y: dims.end_y }, { x: dims.start_x, y: dims.start_y }));
@@ -39,7 +42,7 @@ export class Platform {
         this.end_point_.setUniformColor([0.6, 0.6, 0.6, 1]);
         // Pivot
         this.pivot_mesh_ = new Mesh(context, square_primitive, camera);
-        this.pivot_mesh_.initTransform(dims.x, dims.y, 2, 1.0, 0.75, angle);
+        this.pivot_mesh_.initTransform(x, y, 2, 1.0, 0.75, angle);
         this.pivot_mesh_.setUniformColor([0.4, 0.4, 0.4, 1]);
     };
 

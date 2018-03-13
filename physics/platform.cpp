@@ -144,7 +144,6 @@ void Platform::update(float dt)
 {
 	if (input_component_->wasButtonDown("left")) {
 		bool test_point = pivot_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
-
 		if (test_point) {			
 			float magnitude = pivot_body_->GetMass() * 6.5;
 			b2Vec2 impulse(magnitude * input_component_->dx(), magnitude * input_component_->dy());
@@ -152,7 +151,6 @@ void Platform::update(float dt)
 		}
 		else {
 			test_point = platform_body_->GetFixtureList()->TestPoint(input_component_->previous_position());
-
 			if (test_point) {
 				float magnitude = platform_body_->GetInertia() * 0.9;
 				b2Vec2 force(magnitude * input_component_->dx(), magnitude * input_component_->dy());

@@ -7,6 +7,7 @@
 }
 
 export interface PlatformDimensions extends BoxDimensions {
+    p: number;
     start_x: number;
     start_y: number;
     end_x: number;

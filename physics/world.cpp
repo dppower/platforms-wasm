@@ -20,7 +20,6 @@ World::~World()
 void World::tick(float time_step)
 {
 	player_.update(time_step);
-
 	for (auto& platform : platforms_) {
 		platform.update(time_step);
 	}
@@ -28,7 +27,7 @@ void World::tick(float time_step)
  	world_.Step(time_step, velocity_iterations, position_iterations);
 
 	player_.updateRenderData();
-	for (auto& platform : platforms_) {
+	for (auto& platform : platforms_) {		
 		platform.updateRenderData();
 	}
 }
@@ -46,7 +45,10 @@ void World::init(float width, float height, int input_index, int data_index, int
 	player_.init(world_, data_ptr, &input_component_);
 
 	for (int i = 0; i < platform_count; i++) {
-		platforms_.emplace_back();
+		platforms_.emplace_back();		
+	}
+
+	for (int i = 0; i < platform_count; i++) {
 		platforms_[i].init(world_, platform_ptr, i, &input_component_);
 	}
 }

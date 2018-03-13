@@ -96,8 +96,8 @@ public:
 		return false;
 	}
 
-	bool wasButtonDown(const std::string&  button) {
-		if (button == "left") {
+	bool wasButtonDown(const std::string&  button) {		
+		if (button == "left") {			
 			return !!previous_inputs_->left_button;
 		}
 		else if (button == "right") {

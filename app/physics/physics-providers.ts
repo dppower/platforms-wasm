@@ -10,9 +10,17 @@ export const PHYSICS_PROVIDERS: StaticProvider[] = [
     { provide: WORLD_WIDTH, useValue: 20 },
     {
         provide: PLATFORM_DIMENSIONS,
-        useValue: (<PlatformDimensions[]>[
-            { x: 10, y: 10, hw: 1.2, hh: 2.0, r: 0.6, start_x: 4, start_y: 4, end_x: 16, end_y: 16 }
-        ])
+        useValue: (<PlatformDimensions>
+            { p: 0.5, hw: 1.2, hh: 2.0, r: 0.6, start_x: 4, start_y: 4, end_x: 16, end_y: 16 }
+        ),
+        multi: true
+    },
+    {
+        provide: PLATFORM_DIMENSIONS,
+        useValue: (<PlatformDimensions>
+            { p: 0.8, hw: 0.6, hh: 1.2, r: 0, start_x: 4, start_y: 4, end_x: 16, end_y: 4 }
+        ),
+        multi: true
     },
     {
         provide: PLAYER_DIMENSIONS,

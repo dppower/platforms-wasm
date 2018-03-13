@@ -40,6 +40,7 @@ export class WorldState {
 
     initTransforms() {
         this.platform_count_ = this.platforms_.length;
+
         let initial_values: number[] = [];
         initial_values.push(
             this.player_.x, this.player_.y, this.player_.hw, this.player_.hh,
@@ -47,8 +48,10 @@ export class WorldState {
         );
 
         this.platforms_.forEach(platform => {
+            let x = (1 - platform.p) * platform.start_x + platform.p * platform.end_x;
+            let y = (1 - platform.p) * platform.start_y + platform.p * platform.end_y;
             initial_values.push(
-                platform.x, platform.y, platform.hw, platform.hh,
+                x, y, platform.hw, platform.hh,
                 Math.cos(platform.r), Math.sin(platform.r),
                 platform.start_x, platform.start_y,
                 platform.end_x, platform.end_y
