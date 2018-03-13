@@ -42,7 +42,7 @@ export class Platform {
         this.end_point_.setUniformColor([0.6, 0.6, 0.6, 1]);
         // Pivot
         this.pivot_mesh_ = new Mesh(context, square_primitive, camera);
-        this.pivot_mesh_.initTransform(x, y, 2, 1.0, 0.75, angle);
+        this.pivot_mesh_.initTransform(x, y, 2, 0.75, 0.4, angle);
         this.pivot_mesh_.setUniformColor([0.4, 0.4, 0.4, 1]);
     };
 

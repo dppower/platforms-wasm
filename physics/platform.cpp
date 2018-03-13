@@ -79,7 +79,7 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	b2FixtureDef pivotFixtureDef;
 	pivotFixtureDef.density = 2.6f;
 	b2PolygonShape pivot_rect;
-	pivot_rect.SetAsBox(1.0f, 0.75f);
+	pivot_rect.SetAsBox(0.75f, 0.4f);
 	pivotFixtureDef.shape = &pivot_rect;
 	pivotFixtureDef.userData = nullptr;
 	pivot_body_->CreateFixture(&pivotFixtureDef);

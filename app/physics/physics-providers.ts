@@ -18,7 +18,7 @@ export const PHYSICS_PROVIDERS: StaticProvider[] = [
     {
         provide: PLATFORM_DIMENSIONS,
         useValue: (<PlatformDimensions>
-            { p: 0.8, hw: 0.6, hh: 1.2, r: 0, start_x: 4, start_y: 4, end_x: 16, end_y: 4 }
+            { p: 0.8, hw: 0.8, hh: 1.4, r: 0, start_x: 4, start_y: 2, end_x: 12, end_y: 2 }
         ),
         multi: true
     },
