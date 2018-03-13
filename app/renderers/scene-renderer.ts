@@ -2,9 +2,10 @@ import { Injectable, Inject } from "@angular/core";
 
 import { Mesh } from "../geometry/mesh";
 import { SKY, RGB_COLORS, SQUARE_PRIMITIVE, ARROW_PRIMITIVE } from "../geometry/mesh-providers";
-import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "../physics/constant-tokens";
+import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS, TILE_DATA } from "../physics/constant-tokens";
 import { WorldState} from "../physics/world-state";
 import { BoxDimensions, PlatformDimensions } from "../physics/box-dimensions";
+import { TileData } from "../physics/tile-data";
 import { ShaderProgram } from "../shaders/shader-program";
 import { BASIC_SHADER } from "../shaders/shader-providers";
 import { WEBGL } from "../webgl/webgl-tokens";
@@ -13,12 +14,14 @@ import { RenderLoop } from "../canvas/render-loop";
 import { createCapsuleVertices } from "../geometry/capsule-mesh";
 import { Primitive } from "../geometry/primitive";
 import { Platform } from "../geometry/platform";
+import { Tile } from "../geometry/tile";
 
 @Injectable()
 export class SceneRenderer {
 
     private player_: Mesh;
     private platforms_: Platform[];
+    private tiles_: Tile[];
 
     constructor(
         @Inject(WEBGL) private gl: WebGLRenderingContext,
@@ -29,6 +32,7 @@ export class SceneRenderer {
         @Inject(RGB_COLORS) private rgb_colors: number[][],
         @Inject(PLAYER_DIMENSIONS) private player_dimensions_: BoxDimensions,
         @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: PlatformDimensions[],
+        @Inject(TILE_DATA) private tile_data_: TileData[],
         @Inject(WORLD_WIDTH) private world_width_: number,
         @Inject(WORLD_HEIGHT) private world_height_: number,
         private world_state_: WorldState,
@@ -66,6 +70,15 @@ export class SceneRenderer {
         this.platforms_.forEach(platform => {
             platform.init(this.gl, this.square_primitive_, this.arrow_primitive_, this.main_camera_)
         });
+
+        // Tiles
+        this.tiles_ = this.tile_data_.map(data => {
+            return new Tile(data, 1.25, 1.25);
+        });
+
+        this.tiles_.forEach(tile => {
+            tile.init(this.gl, this.square_primitive_, this.main_camera_);
+        });
     };
 
     updateScene(dt: number) {
@@ -86,7 +99,7 @@ export class SceneRenderer {
         );
 
         this.sky_.drawMesh(this.shader_);
-
+        this.tiles_.forEach(tile => tile.draw(this.shader_));
         this.player_.drawMesh(this.shader_);
         this.platforms_.forEach(platform => platform.draw(this.shader_));
     };

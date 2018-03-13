@@ -10,7 +10,7 @@ import { SHADER_PROVIDERS, BASIC_SHADER } from "../shaders/shader-providers";
 import {
     MESH_PROVIDERS, SKY, RGB_COLORS, SQUARE_PRIMITIVE, ARROW_PRIMITIVE
 } from "../geometry/mesh-providers";
-import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "../physics/constant-tokens";
+import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS, TILE_DATA } from "../physics/constant-tokens";
 import { WorldState } from "../physics/world-state";
 
 @Directive({
@@ -73,7 +73,7 @@ export class WebglDirective {
                     provide: SceneRenderer,
                     useClass: SceneRenderer,
                     deps: [WEBGL, BASIC_SHADER, SKY, SQUARE_PRIMITIVE, ARROW_PRIMITIVE, RGB_COLORS,
-                        PLAYER_DIMENSIONS, PLATFORM_DIMENSIONS, WORLD_WIDTH, WORLD_HEIGHT,
+                        PLAYER_DIMENSIONS, PLATFORM_DIMENSIONS, TILE_DATA, WORLD_WIDTH, WORLD_HEIGHT,
                         WorldState, Camera2d, RenderLoop
                     ]
                 },

@@ -1,7 +1,8 @@
 ﻿import { Injectable, Inject } from "@angular/core";
 
-import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "./constant-tokens";
+import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS, TILE_DATA } from "./constant-tokens";
 import { BoxDimensions, PlatformDimensions } from "./box-dimensions";
+import { TileData } from "./tile-data";
 import { InputManager } from "../canvas/input-manager";
 
 @Injectable()
@@ -26,6 +27,7 @@ export class WorldState {
         @Inject(WORLD_HEIGHT) private world_height_: number,
         @Inject(PLATFORM_DIMENSIONS) private platforms_: PlatformDimensions[],
         @Inject(PLAYER_DIMENSIONS) private player_: BoxDimensions,
+        @Inject(TILE_DATA) private tile_data_: TileData[],
         private input_manager_: InputManager
     ) { };
 
@@ -55,6 +57,12 @@ export class WorldState {
                 Math.cos(platform.r), Math.sin(platform.r),
                 platform.start_x, platform.start_y,
                 platform.end_x, platform.end_y
+            );
+        });
+
+        this.tile_data_.forEach(tile => {
+            initial_values.push(
+                tile.row, tile.column, tile.shape, tile.material, tile.pivot, tile.flip
             );
         });
 

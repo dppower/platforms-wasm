@@ -2,7 +2,8 @@
 
 import { WorldState } from "./world-state";
 import { BoxDimensions, PlatformDimensions } from "./box-dimensions";
-import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS } from "./constant-tokens";
+import { TileData } from "./tile-data";
+import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS, TILE_DATA } from "./constant-tokens";
 import { InputManager } from "../canvas/input-manager";
 
 export const PHYSICS_PROVIDERS: StaticProvider[] = [
@@ -23,12 +24,19 @@ export const PHYSICS_PROVIDERS: StaticProvider[] = [
         multi: true
     },
     {
+        provide: TILE_DATA,
+        useValue: (<TileData>
+            { column: 1, row: 1, shape: 0, material: 0, flip: 0, pivot: 0 }
+        ),
+        multi: true
+    },
+    {
         provide: PLAYER_DIMENSIONS,
         useValue: (<BoxDimensions>{ x: 2, y: 0.9, hw: 0.4, hh: 0.5, r: 0 })
     },
     {
         provide: WorldState,
         useClass: WorldState,
-        deps: [WORLD_WIDTH, WORLD_HEIGHT, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS, InputManager]
+        deps: [WORLD_WIDTH, WORLD_HEIGHT, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS, TILE_DATA, InputManager]
     }
 ];

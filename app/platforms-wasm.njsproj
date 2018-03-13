@@ -60,7 +60,12 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="geometry\primitive.ts" />
     <TypeScriptCompile Include="geometry\mesh.ts" />
+    <TypeScriptCompile Include="geometry\triangle-mesh.ts" />
+    <TypeScriptCompile Include="geometry\trapezoid-mesh.ts" />
     <TypeScriptCompile Include="geometry\square-mesh.ts" />
+    <TypeScriptCompile Include="geometry\tile.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="main.ts" />
     <TypeScriptCompile Include="maths\rot2.ts" />
     <TypeScriptCompile Include="maths\transform.ts" />
@@ -72,6 +77,7 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="physics\physics-providers.ts" />
+    <TypeScriptCompile Include="physics\tile-data.ts" />
     <TypeScriptCompile Include="physics\world-state.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
