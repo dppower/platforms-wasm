@@ -25,10 +25,13 @@ export const PHYSICS_PROVIDERS: StaticProvider[] = [
     },
     {
         provide: TILE_DATA,
-        useValue: (<TileData>
-            { column: 1, row: 1, shape: 4, material: 0, flip: 0, pivot: 0 }
-        ),
-        multi: true
+        useValue: (<TileData[]>[
+            { column: 1, row: 2, shape: 0, material: 0, flip: 0, pivot: 1 },
+            { column: 1, row: 3, shape: 1, material: 1, flip: 0, pivot: 1 },
+            { column: 1, row: 4, shape: 2, material: 2, flip: 0, pivot: 1 },
+            { column: 1, row: 5, shape: 3, material: 3, flip: 0, pivot: 1 },
+            { column: 1, row: 6, shape: 4, material: 0, flip: 0, pivot: 1 }
+        ])
     },
     {
         provide: PLAYER_DIMENSIONS,

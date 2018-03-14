@@ -5,11 +5,14 @@ import { Primitive } from "./primitive";
 import { square_mesh_data } from "./square-mesh";
 import { circle_mesh_data } from "./circle-mesh";
 import { arrow_mesh_data } from "./arrow-mesh";
-import { trapezoid_tile_mesh_data } from "./trapezoid-mesh";
+import { left_trapezoid_mesh, right_trapezoid_mesh } from "./trapezoid-mesh";
+import { left_wedge_tile, right_wedge_tile } from "./wedge-tile";
 import { triangle_tile_mesh_data } from "./triangle-mesh";
+import { rectangle_tile_mesh } from "./rectangle-tile";
 
 // Primitives
-export type PrimitiveTypes = "square" | "circle" | "arrow" | "trapezoid" | "triangle";
+export type PrimitiveTypes = "square" | "circle" | "arrow" | "rectangle" |
+    "left-trapezoid" | "right-trapezoid" | "triangle" | "left-wedge" | "right-wedge";
 export type PrimitiveMap = Map<PrimitiveTypes, Primitive[]>;
 export const PRIMITIVES = new InjectionToken<PrimitiveMap>("map of primitives");
 
@@ -52,7 +55,11 @@ export const MESH_PROVIDERS: StaticProvider[] = [
             map.set("triangle", [new Primitive(context, triangle_tile_mesh_data)]);
             map.set("circle", [new Primitive(context, circle_mesh_data)]);
             map.set("arrow", [new Primitive(context, arrow_mesh_data)]);
-            map.set("trapezoid", [new Primitive(context, trapezoid_tile_mesh_data)]);
+            map.set("rectangle", [new Primitive(context, rectangle_tile_mesh)]);
+            map.set("left-trapezoid", [new Primitive(context, left_trapezoid_mesh)]);
+            map.set("right-trapezoid", [new Primitive(context, right_trapezoid_mesh)]);
+            map.set("left-wedge", [new Primitive(context, left_wedge_tile)]);
+            map.set("right-wedge", [new Primitive(context, right_wedge_tile)]);
             return map;
         },
         deps: [WEBGL]

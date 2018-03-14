@@ -60,6 +60,10 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="geometry\primitive.ts" />
     <TypeScriptCompile Include="geometry\mesh.ts" />
+    <TypeScriptCompile Include="geometry\rectangle-tile.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="geometry\wedge-tile.ts" />
     <TypeScriptCompile Include="geometry\triangle-mesh.ts" />
     <TypeScriptCompile Include="geometry\trapezoid-mesh.ts" />
     <TypeScriptCompile Include="geometry\square-mesh.ts" />
