@@ -26,7 +26,7 @@ export const PHYSICS_PROVIDERS: StaticProvider[] = [
     {
         provide: TILE_DATA,
         useValue: (<TileData>
-            { column: 1, row: 1, shape: 0, material: 0, flip: 0, pivot: 0 }
+            { column: 1, row: 1, shape: 4, material: 0, flip: 0, pivot: 0 }
         ),
         multi: true
     },

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@angular/core";
 
 import { Mesh } from "../geometry/mesh";
-import { SKY, RGB_COLORS, SQUARE_PRIMITIVE, ARROW_PRIMITIVE } from "../geometry/mesh-providers";
+import { PRIMITIVES, PrimitiveMap, RGB_COLORS } from "../geometry/mesh-providers";
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS, TILE_DATA } from "../physics/constant-tokens";
 import { WorldState} from "../physics/world-state";
 import { BoxDimensions, PlatformDimensions } from "../physics/box-dimensions";
@@ -22,13 +22,12 @@ export class SceneRenderer {
     private player_: Mesh;
     private platforms_: Platform[];
     private tiles_: Tile[];
+    private sky_: Mesh;
 
     constructor(
         @Inject(WEBGL) private gl: WebGLRenderingContext,
         @Inject(BASIC_SHADER) private shader_: ShaderProgram,
-        @Inject(SKY) private sky_: Mesh,
-        @Inject(SQUARE_PRIMITIVE) private square_primitive_: Primitive[],
-        @Inject(ARROW_PRIMITIVE) private arrow_primitive_: Primitive[],      
+        @Inject(PRIMITIVES) private primitive_map_: PrimitiveMap,
         @Inject(RGB_COLORS) private rgb_colors: number[][],
         @Inject(PLAYER_DIMENSIONS) private player_dimensions_: BoxDimensions,
         @Inject(PLATFORM_DIMENSIONS) private platform_dimensions_: PlatformDimensions[],
@@ -44,6 +43,7 @@ export class SceneRenderer {
         this.shader_.initProgram();
 
         // Sky
+        this.sky_ = new Mesh(this.gl, this.primitive_map_.get("square"), this.main_camera_);
         this.sky_.setUniformColor([0.729, 0.831, 0.937, 1.0]/*, 3*/);
         let hw = this.world_width_ / 2;
         let hh = this.world_height_ / 2;
@@ -68,7 +68,7 @@ export class SceneRenderer {
         });
         
         this.platforms_.forEach(platform => {
-            platform.init(this.gl, this.square_primitive_, this.arrow_primitive_, this.main_camera_)
+            platform.init(this.gl, this.primitive_map_, this.main_camera_)
         });
 
         // Tiles
@@ -77,7 +77,7 @@ export class SceneRenderer {
         });
 
         this.tiles_.forEach(tile => {
-            tile.init(this.gl, this.square_primitive_, this.main_camera_);
+            tile.init(this.gl, this.primitive_map_, this.main_camera_);
         });
     };
 

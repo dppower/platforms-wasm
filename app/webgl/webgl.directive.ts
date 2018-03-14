@@ -7,9 +7,7 @@ import { InputManager } from "../canvas/input-manager";
 import { RenderLoop } from "../canvas/render-loop";
 import { WEBGL, WEBGL_EXTENSIONS } from "./webgl-tokens";
 import { SHADER_PROVIDERS, BASIC_SHADER } from "../shaders/shader-providers";
-import {
-    MESH_PROVIDERS, SKY, RGB_COLORS, SQUARE_PRIMITIVE, ARROW_PRIMITIVE
-} from "../geometry/mesh-providers";
+import { MESH_PROVIDERS, PRIMITIVES, RGB_COLORS } from "../geometry/mesh-providers";
 import { WORLD_HEIGHT, WORLD_WIDTH, PLATFORM_DIMENSIONS, PLAYER_DIMENSIONS, TILE_DATA } from "../physics/constant-tokens";
 import { WorldState } from "../physics/world-state";
 
@@ -72,7 +70,8 @@ export class WebglDirective {
                 {
                     provide: SceneRenderer,
                     useClass: SceneRenderer,
-                    deps: [WEBGL, BASIC_SHADER, SKY, SQUARE_PRIMITIVE, ARROW_PRIMITIVE, RGB_COLORS,
+                    deps: [
+                        WEBGL, BASIC_SHADER, PRIMITIVES, RGB_COLORS,
                         PLAYER_DIMENSIONS, PLATFORM_DIMENSIONS, TILE_DATA, WORLD_WIDTH, WORLD_HEIGHT,
                         WorldState, Camera2d, RenderLoop
                     ]

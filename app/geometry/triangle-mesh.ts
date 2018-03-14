@@ -7,3 +7,5 @@ export function createTriangleVertices(x: number, y: number, hw: number, hh: num
         indices: [0, 1, 2]
     };
 };
+
+export const triangle_tile_mesh_data = createTriangleVertices(0, 0, 1, 1);

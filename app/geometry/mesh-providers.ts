@@ -1,26 +1,17 @@
 ﻿import { InjectionToken, StaticProvider } from "@angular/core";
 
 import { WEBGL } from "../webgl/webgl-tokens";
-import { Camera2d } from "../canvas/camera-2d";
-import { Mesh } from "./mesh";
-import { MeshData } from "./mesh-data";
 import { Primitive } from "./primitive";
 import { square_mesh_data } from "./square-mesh";
 import { circle_mesh_data } from "./circle-mesh";
 import { arrow_mesh_data } from "./arrow-mesh";
-
-// Mesh Data
-const SQUARE_MESH = new InjectionToken<MeshData>("square mesh data");
-const CIRCLE_MESH = new InjectionToken<MeshData>("cirle mesh data");
-const ARROW_MESH = new InjectionToken<MeshData>("arrow mesh data");
+import { trapezoid_tile_mesh_data } from "./trapezoid-mesh";
+import { triangle_tile_mesh_data } from "./triangle-mesh";
 
 // Primitives
-export const SQUARE_PRIMITIVE = new InjectionToken<Primitive[]>("square primitive");
-export const CIRCLE_PRIMITIVE = new InjectionToken<Primitive[]>("circle primitive");
-export const ARROW_PRIMITIVE = new InjectionToken<Primitive[]>("arrow primitive");
-
-// Sky
-export const SKY = new InjectionToken<Mesh>("sky mesh");
+export type PrimitiveTypes = "square" | "circle" | "arrow" | "trapezoid" | "triangle";
+export type PrimitiveMap = Map<PrimitiveTypes, Primitive[]>;
+export const PRIMITIVES = new InjectionToken<PrimitiveMap>("map of primitives");
 
 // Colors
 export const HEX_COLORS = new InjectionToken<string[]>("hex colors");
@@ -53,26 +44,17 @@ export const MESH_PROVIDERS: StaticProvider[] = [
         useFactory: (array: string[]) => { return array.map(hex => hexToRGBA(hex)); },
         deps: [HEX_COLORS]
     },
-    { provide: SQUARE_MESH, useValue: square_mesh_data },
     {
-        provide: SQUARE_PRIMITIVE,
-        useClass: Primitive,
-        deps: [WEBGL, SQUARE_MESH],
-        multi: true
-    },
-    { provide: SKY, useClass: Mesh, deps: [WEBGL, SQUARE_PRIMITIVE, Camera2d] },
-    { provide: CIRCLE_MESH, useValue: circle_mesh_data },
-    {
-        provide: CIRCLE_PRIMITIVE,
-        useClass: Primitive,
-        deps: [WEBGL, CIRCLE_MESH],
-        multi: true
-    },
-    { provide: ARROW_MESH, useValue: arrow_mesh_data },
-    {
-        provide: ARROW_PRIMITIVE,
-        useClass: Primitive,
-        deps: [WEBGL, ARROW_MESH],
-        multi: true
+        provide: PRIMITIVES,
+        useFactory: (context: WebGLRenderingContext): PrimitiveMap => {
+            let map = new Map<PrimitiveTypes, Primitive[]>();
+            map.set("square", [new Primitive(context, square_mesh_data)]);
+            map.set("triangle", [new Primitive(context, triangle_tile_mesh_data)]);
+            map.set("circle", [new Primitive(context, circle_mesh_data)]);
+            map.set("arrow", [new Primitive(context, arrow_mesh_data)]);
+            map.set("trapezoid", [new Primitive(context, trapezoid_tile_mesh_data)]);
+            return map;
+        },
+        deps: [WEBGL]
     }
 ];
