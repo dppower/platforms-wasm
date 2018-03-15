@@ -17,10 +17,11 @@ export class WorldState {
 
     private data_pointer_: number; //=> Byte
     private data_offset_: number; //=> Float
-
+    private tile_pointer_: number;
     private input_pointer_: number;
 
     private platform_count_: number;
+    private tile_count_: number;
 
     constructor(        
         @Inject(WORLD_WIDTH) private world_width_: number,
@@ -35,7 +36,8 @@ export class WorldState {
         this.initTransforms();
         this.world_module_ = new Module.World();
         this.world_module_.init(this.world_width_, this.world_height_,
-            this.input_pointer_, this.data_pointer_, this.platform_count_
+            this.input_pointer_, this.data_pointer_, this.platform_count_,
+            this.tile_pointer_, this.tile_count_, 16, 16
         );
         this.is_initialised_ = true;
     };
@@ -60,16 +62,22 @@ export class WorldState {
             );
         });
 
-        this.tile_data_.forEach(tile => {
-            initial_values.push(
-                tile.row, tile.column, tile.shape, tile.material, tile.pivot, tile.flip
-            );
-        });
-
         // Allocate memory for transforms
         this.data_pointer_ = Module._malloc(initial_values.length * 4);
         this.data_offset_ = this.data_pointer_ >> 2;
         Module.HEAPF32.set(initial_values, this.data_offset_);
+
+        // Allocate memory for tiles
+        let tile_values: number[] = [];
+        this.tile_count_ = this.tile_data_.length;
+        this.tile_data_.forEach(tile => {
+            tile_values.push(
+                tile.column, tile.row, tile.shape, tile.material, tile.flip, tile.pivot
+            );
+        });
+
+        this.tile_pointer_ = Module._malloc(tile_values.length);
+        Module.HEAPU8.set(tile_values, this.tile_pointer_);
 
         // Allocate memory for inputs
         this.input_pointer_ = Module._malloc(56);

@@ -11,26 +11,20 @@ export const PHYSICS_PROVIDERS: StaticProvider[] = [
     { provide: WORLD_WIDTH, useValue: 20 },
     {
         provide: PLATFORM_DIMENSIONS,
-        useValue: (<PlatformDimensions>
-            { p: 0.5, hw: 1.2, hh: 2.0, r: 0.6, start_x: 4, start_y: 4, end_x: 16, end_y: 16 }
-        ),
-        multi: true
-    },
-    {
-        provide: PLATFORM_DIMENSIONS,
-        useValue: (<PlatformDimensions>
-            { p: 0.8, hw: 0.8, hh: 1.4, r: 0, start_x: 4, start_y: 2, end_x: 12, end_y: 2 }
-        ),
-        multi: true
+        useValue: (<PlatformDimensions[]>[
+            { p: 0.5, hw: 1.2, hh: 2.0, r: 0.6, start_x: 4, start_y: 4, end_x: 16, end_y: 16 },
+            { p: 0.8, hw: 0.8, hh: 1.4, r: 0, start_x: 10, start_y: 3, end_x: 18, end_y: 3 }
+        ])
     },
     {
         provide: TILE_DATA,
         useValue: (<TileData[]>[
-            { column: 1, row: 2, shape: 0, material: 0, flip: 0, pivot: 1 },
-            { column: 1, row: 3, shape: 1, material: 1, flip: 0, pivot: 1 },
-            { column: 1, row: 4, shape: 2, material: 2, flip: 0, pivot: 1 },
-            { column: 1, row: 5, shape: 3, material: 3, flip: 0, pivot: 1 },
-            { column: 1, row: 6, shape: 4, material: 0, flip: 0, pivot: 1 }
+            { column: 3, row: 1, shape: 0, material: 0, flip: 0, pivot: 0 },
+            { column: 5, row: 1, shape: 1, material: 1, flip: 0, pivot: 0 },
+            { column: 7, row: 1, shape: 2, material: 2, flip: 0, pivot: 0 },
+            { column: 9, row: 1, shape: 3, material: 3, flip: 1, pivot: 1 },
+            { column: 10, row: 1, shape: 3, material: 3, flip: 0, pivot: 0 },
+            { column: 11, row: 1, shape: 4, material: 0, flip: 0, pivot: 0 }
         ])
     },
     {

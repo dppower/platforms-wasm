@@ -24,7 +24,8 @@ void WorldBounds::init(b2World& world, float width, float height) {
 
 	b2FixtureDef fixtureDef;
 	fixtureDef.density = 0.0f;
-	// Ground Box	
+	// Ground Box
+	fixtureDef.friction = 0.4f;
 	b2PolygonShape boundingBox;	
 	boundingBox.SetAsBox(width * 1.5f, height * 0.5f, b2Vec2(width * 0.5f, height * -0.5f), 0);
 	fixtureDef.shape = &boundingBox;
@@ -32,18 +33,21 @@ void WorldBounds::init(b2World& world, float width, float height) {
 	origin->CreateFixture(&fixtureDef);
 
 	// Left Box
+	fixtureDef.friction = 0.0f;
 	boundingBox.SetAsBox(width * 0.5f, height * 0.5f, b2Vec2(width * -0.5f, height * 0.5f), 0);
 	fixtureDef.shape = &boundingBox;
 	fixtureDef.userData = nullptr;
 	origin->CreateFixture(&fixtureDef);
 
 	// Right Box
+	fixtureDef.friction = 0.0f;
 	boundingBox.SetAsBox(width * 0.5f, height * 0.5f, b2Vec2(width * 1.5f, height * 0.5f), 0);
 	fixtureDef.shape = &boundingBox;
 	fixtureDef.userData = nullptr;
 	origin->CreateFixture(&fixtureDef);
 
 	// Top Box
+	fixtureDef.friction = 0.0f;
 	boundingBox.SetAsBox(width * 1.5f, height * 0.5f, b2Vec2(width * 0.5f, height * 1.5f), 0);
 	fixtureDef.shape = &boundingBox;
 	fixtureDef.userData = nullptr;

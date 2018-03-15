@@ -44,7 +44,7 @@ export class SceneRenderer {
 
         // Sky
         this.sky_ = new Mesh(this.gl, this.primitive_map_.get("square"), this.main_camera_);
-        this.sky_.setUniformColor([0.729, 0.831, 0.937, 1.0]/*, 3*/);
+        this.sky_.setUniformColor([0.729, 0.831, 0.937, 1.0]);
         let hw = this.world_width_ / 2;
         let hh = this.world_height_ / 2;
         this.sky_.initTransform(hw, hh, 10, hw, hh, 0);
@@ -56,7 +56,7 @@ export class SceneRenderer {
         ).map(mesh_data => new Primitive(this.gl, mesh_data));
 
         this.player_ = new Mesh(this.gl, player_primitives, this.main_camera_);
-
+        this.player_.setUniformColor([0.392, 0.306, 0.878, 1.0]);
         this.player_.initTransform(
             this.player_dimensions_.x, this.player_dimensions_.y, 1,
             1, 1, 0

@@ -157,6 +157,7 @@ void Player::init(b2World& world, RenderData* data_ptr, InputComponent* input_co
 	// Three fixtures, two circles and rectangle to form capsule
 	b2FixtureDef fixtureDef;
 	fixtureDef.density = 1.0f;
+	fixtureDef.friction = 0.3f;
 
 	b2CircleShape lower_circle;
 	lower_circle.m_p.Set(0.0f, -hh);
@@ -173,7 +174,7 @@ void Player::init(b2World& world, RenderData* data_ptr, InputComponent* input_co
 	body_->CreateFixture(&fixtureDef);
 
 	b2PolygonShape body_rect;
-	body_rect.SetAsBox(hw - 0.05f, hh);
+	body_rect.SetAsBox(hw, hh);
 	fixtureDef.shape = &body_rect;
 	fixtureDef.userData = nullptr;
 	body_->CreateFixture(&fixtureDef);

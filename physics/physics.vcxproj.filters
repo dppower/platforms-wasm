@@ -6,6 +6,7 @@
     <ClCompile Include="world.cpp" />
     <ClCompile Include="platform.cpp" />
     <ClCompile Include="contact_listener.cpp" />
+    <ClCompile Include="tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h" />
@@ -15,5 +16,7 @@
     <ClInclude Include="render_data.h" />
     <ClInclude Include="contact_listener.h" />
     <ClInclude Include="input_component.h" />
+    <ClInclude Include="tile_data.h" />
+    <ClInclude Include="tile.h" />
   </ItemGroup>
 </Project>

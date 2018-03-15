@@ -26,10 +26,10 @@ export enum Pivot {
 }
 
 export interface TileData {
+    column: number;
+    row: number;
     shape: Shape;
     material: Material;
-    row: number;
-    column: number;
     flip: Flip //=> applies to trapezoid or wedge
     pivot: Pivot; //=> 0: pivot in bottom left
 }

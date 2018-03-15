@@ -50,6 +50,7 @@ void Platform::init(b2World & world, PlatformData * data_ptr, int index, InputCo
 	// Platform Fixture
 	b2FixtureDef fixtureDef;
 	fixtureDef.density = 2.6f;
+	fixtureDef.friction = 0.5f;
 	b2PolygonShape body_rect;
 	body_rect.SetAsBox(hw, hh);
 	fixtureDef.shape = &body_rect;

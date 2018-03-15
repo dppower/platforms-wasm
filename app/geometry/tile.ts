@@ -56,12 +56,7 @@ export class Tile {
 
         let hw = this.tile_width_ / 2;     
         let hh = this.tile_height_ / 2;
-
-        //if (data.shape === Shape.rectangle || data.shape === Shape.wedge) {
-        //    hh *= 0.5;
-        //    y = this.tile_height_ * (data.row + 0.25);
-        //}
-
+        
         this.mesh_.initTransform(x, y, 4, hw, hh, this.getRotation());
     };
 

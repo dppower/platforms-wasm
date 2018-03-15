@@ -1,7 +1,7 @@
 ﻿declare class World {
     constructor();
-    init: (width: number, height: number, input_index: number,
-        data_index: number, platform_count: number) => void;
+    init: (width: number, height: number, input_index: number, data_index: number, platform_count: number,
+        tile_index: number, tile_count: number, tile_rows: number, tile_columns: number) => void;
     tick: (dt: number) => void;
 }
 
